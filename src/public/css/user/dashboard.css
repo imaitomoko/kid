@@ -1,0 +1,67 @@
+.content {
+    margin: 40px auto;
+    max-width: 760px;
+}
+
+.heading {
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+h2 {
+    display: inline-block;
+    border-bottom: 2px solid #333;
+    padding-bottom: 4px;
+}
+
+.reservation {
+    text-align: center;
+    margin: 40px 0;
+}
+
+.reservation a {
+    display: inline-block;
+    padding: 20px 60px;
+    font-size: 25px;
+    background-color: #10B981;
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 8px;
+}
+
+.button {
+    display: flex;
+    justify-content: space-between;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 0 20px;
+    margin-top: 100px;
+}
+
+.button a {
+    display: inline-block;
+    padding: 12px 20px;
+    font-size: 18px;
+    border: 2px solid #10B981;
+    color: #10B981;
+    background-color: transparent;
+    text-decoration: none;
+    border-radius: 6px;
+    text-align: center;
+    font-weight: bold;
+    width: 100%;
+}
+
+.confirm,
+.mypage {
+    flex: 1;
+}
+
+.confirm {
+    margin-right: 10px;
+}
+
+.mypage {
+    margin-left: 10px;
+}
