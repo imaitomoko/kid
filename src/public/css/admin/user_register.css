@@ -20,6 +20,14 @@ h2 {
     color: #4f4c4c;
 }
 
+.alert-success {
+    position: relative;
+    margin-top: 120px;
+    text-align: center;
+    color: green;
+    z-index: 1200;
+}
+
 .form {
     max-width: 650px;
     margin: 200px auto 20px;

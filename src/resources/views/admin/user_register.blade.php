@@ -9,7 +9,14 @@
     <div class="heading">
         <h2>ユーザー新規登録</h2>
     </div>
-    <form class="form" action="" method="POST">
+
+    @if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+    @endif
+    
+    <form class="form" action="{{ route('admin.store') }}" method="POST">
         @csrf
         @php
         $old_names = old('contact_name', []);
