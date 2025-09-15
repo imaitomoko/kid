@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('contacts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->string('contact_name');
-            $table->string('relationship');
-            $table->string('phone_number');
+            $table->string('contact_name')->nullable();
+            $table->string('relationship')->nullable();
+            $table->string('phone_number')->nullable();
             $table->timestamps();
         });
     }

@@ -49,4 +49,39 @@ class User extends Authenticatable
     {
         return 'user_id';
     }
+
+    public function contacts()
+    {
+        return $this->hasMany(contact::class);
+    }
+
+    public function child()
+    {
+        return $this->hasOne(child::class);
+    }
+
+    public function isProfileComplete(): bool
+    {
+        if(!$this->user_id || !$this->name || !$this->password){
+            return false;
+        }
+        
+        $child = $this->child;
+        if(!$child) {
+            return false;
+        }
+        if(!$child->child_name || !$child->birthday || !$child->gender){
+            return false;
+        }
+
+        if($this->contacts->count() < 2){
+            return false;
+        }
+        foreach ($this->contacts as $contact){
+            if(!$contact->contact_name || !$contact->relationship || !$contact->phone_number ){
+                return false;
+            }
+        }
+        return true;
+    }
 }

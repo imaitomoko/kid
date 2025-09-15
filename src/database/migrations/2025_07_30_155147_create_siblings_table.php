@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('siblings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('child_id')->constrained('children')->onDelete('cascade');
-            $table->string('sibling_name');
-            $table->date('sibling_birthday');
+            $table->string('sibling_name')->nullable();
+            $table->date('sibling_birthday')->nullable();
             $table->string('sibling_class')->nullable();
             $table->timestamps();
         });

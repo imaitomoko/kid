@@ -65,5 +65,21 @@ class UsersTableSeeder extends Seeder
             'address' => '東京都○○区',
         ]);
 
+        User::create([
+            'user_id' => 'admin01',
+            'name' => 'admin',
+            'email' => 'admin@example.com',
+            'password' => Hash::make('12345'),
+            'role' => 'admin',
+        ]);
+
+        User::create([
+            'user_id' => 'teacher01',
+            'name' => 'teacher01',
+            'email' => 'teacher@example.com',
+            'password' => Hash::make('12345'),
+            'role' => 'teacher',
+        ]);
+
     }
 }

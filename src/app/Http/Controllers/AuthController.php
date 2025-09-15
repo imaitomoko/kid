@@ -39,5 +39,22 @@ class AuthController extends Controller
         ]);
     }
 
+    public function logout(Request $request)
+    {
+        $role = Auth::user()->role;
+        Auth::logout(); // ログアウト
+
+        // セッションを無効化
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        // ログイン画面へリダイレクト
+        return match ($role) {
+            'admin'   => redirect()->route('admin.login'),
+            'teacher' => redirect()->route('teacher.login'),
+            default   => redirect()->route('user.login'),
+        };
+    }
+
     //
 }

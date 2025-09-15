@@ -14,20 +14,48 @@ h2 {
     padding-bottom: 4px;
 }
 
-.reservation {
-    text-align: center;
-    margin: 40px 0;
+.alert.alert-warning {
+    color: rgb(82, 80, 80);
 }
 
-.reservation a {
+.reservation {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.reservation a,
+.reservation button {
     display: inline-block;
-    padding: 20px 60px;
-    font-size: 25px;
-    background-color: #10B981;
-    color: white;
+    width: 250px;
+    padding: 20px 0;
+    font-size: 20px;
+    text-align: center;
     font-weight: bold;
     text-decoration: none;
     border-radius: 8px;
+    border: none;
+}
+
+.reservation .btn-primary {
+    background-color: #10B981;
+    /* 緑 */
+    color: #fff;
+}
+
+.reservation .btn-primary:disabled {
+    background-color: #f3f1f1;
+    /* グレー */
+    color: #fff;
+    cursor: not-allowed;
+}
+
+.reservation .btn-secondary {
+    background-color: #3B82F6;
+    /* 青 */
+    color: #fff;
 }
 
 .button {

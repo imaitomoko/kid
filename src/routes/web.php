@@ -48,7 +48,7 @@ Route::middleware(['auth', 'role:teacher'])->group(function () {
 
 // 一般ユーザー
 Route::middleware(['auth', 'role:user'])->group(function () {
-    Route::get('/dashboard', [MypageController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [MypageController::class, 'index'])->name('user.dashboard');
     
 });
 

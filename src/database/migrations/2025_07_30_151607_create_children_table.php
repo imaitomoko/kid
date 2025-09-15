@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('children', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->string('child_name');
-            $table->date('birthday');
+            $table->string('child_name')->nullable();
+            $table->date('birthday')->nullable();
             $table->string('allergy')->nullable();
-            $table->string('gender');
+            $table->string('gender')->nullable();
             $table->timestamps();
         });
     }
