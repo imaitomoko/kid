@@ -25,9 +25,9 @@ class AdminUserController extends Controller
     {
         $validated = $request->validate([
             'user_id' => 'required|unique:users,user_id',
-            'user_name' => 'required|string|max:25',
+            'name' => 'required|string|max:25',
             'password' => 'required|string|min:5',
-            'role'          => 'required|in:ユーザー,職員,管理者',
+            'role'          => 'required|in:user,teacher,admin',
             'address'       => 'nullable|string|max:255',
             'child_name'    => 'nullable|string|max:100',
             'birthday'  => 'nullable|date',
@@ -41,7 +41,7 @@ class AdminUserController extends Controller
 
         $user = User::create([
             'user_id' => $validated['user_id'],
-            'name' => $validated['user_name'],
+            'name' => $validated['name'],
             'password' => Hash::make($validated['password']),
             'role'      => $validated['role'],
             'address'      => $validated['address'] ?? null,
@@ -79,7 +79,121 @@ class AdminUserController extends Controller
         }
 
         return redirect()->route('admin.create')->with('success', 'ユーザーを登録しました');
+    }
 
+    public function search(Request $request)
+    {
+        $roles = ['admin', 'teacher', 'user'];
+
+        return view('admin.user_list', compact('roles'));
+    }
+
+    public function show(Request $request)
+    {
+        $roles = ['admin', 'teacher', 'user'];
+
+        $request->validate([
+            'role' => 'required|string', // 役割は必須
+            'name' => 'nullable|string'
+        ]);
+
+        $query = User::query();
+
+        // 役割で絞り込み
+        if ($request->filled('role')) {
+            $query->where('role', $request->role);
+        }
+
+        // ユーザー名で部分一致（漢字含む）
+        if ($request->filled('name')) {
+            $query->where('name', 'like', '%' . $request->name . '%');
+        }
+
+        $users = $query->paginate(8)->appends($request->all());
+
+        return view('admin.user_list', compact('roles', 'users'));
+    }
+
+    public function edit($id)
+    {
+        $user = User::with(['child.siblings', 'contacts'])->findOrFail($id);
+
+        return view('admin.user_edit', compact('user'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $user = User::with(['child.siblings', 'contacts'])->findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:25',
+            'password' => 'nullable|string|min:5',
+            'address'       => 'nullable|string|max:255',
+            'child_name'    => 'nullable|string|max:100',
+            'birthday'  => 'nullable|date',
+            'gender'  => 'nullable|string|in:男,女',
+            'relationship.*'  => 'nullable|string|max:20',
+            'phone_number.*'  => 'nullable|string|max:50',
+            'contact_name.*'  => 'nullable|string|max:100',
+            'allergy'  => 'nullable|string|max:250',
+            'sibling_name.*'  => 'nullable|string|max:25',
+        ]);
+
+        $user->update([
+            'name'    => $validated['name'],
+            'address' => $validated['address'] ?? null,
+        ]);
+
+        if (!empty($validated['password'])) {
+            $user->password = bcrypt($validated['password']);
+            $user->save();
+        }
+
+        $child = $user->child()->updateOrCreate(
+            ['user_id' => $user->id],
+            [
+                'child_name' => $validated['child_name'],
+                'birthday'   => $validated['birthday'] ?? null,
+                'allergy'    => $validated['allergy'] ?? null,
+                'gender'     => $validated['gender'] ?? null,
+            ]
+        );
+
+        if (!empty($validated['sibling_name'])) {
+            foreach ($validated['sibling_name'] as $siblingName) {
+                if (!empty($siblingName)) {
+                    $child->siblings()->updateOrCreate(
+                        ['child_id' => $child->id, 'sibling_name' => $siblingName],
+                        ['sibling_name' => $siblingName]
+                    );
+                }
+            }
+        }
+
+        if ($request->has('relationship')) {
+            foreach ($request->relationship as $i => $relationship) {
+                if (!empty($relationship) || !empty($request->phone_number[$i]) || !empty($request->contact_name[$i])) {
+                    $user->contacts()->updateOrCreate(
+                        ['id' => $user->contacts[$i]->id ?? null],
+                        [
+                            'relationship' => $relationship,
+                            'phone_number' => $request->phone_number[$i] ?? null,
+                            'contact_name' => $request->contact_name[$i] ?? null,
+                        ]
+                    );
+                }
+            }
+        }
+
+        return redirect()->route('admin.edit', $user->id)->with('success', 'ユーザー情報を更新しました。');
+    }
+
+    public function destroy($id)
+    {
+        $user = User::findOrFail($id);
+        $user->delete();
+
+        return redirect()->route('admin.show')->with('success', 'ユーザーを削除しました。');
     }
     //
 }

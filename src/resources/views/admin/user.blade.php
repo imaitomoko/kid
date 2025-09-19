@@ -12,7 +12,7 @@
     <div class="menu-group">
         <div class="main-menu">
             <a href="{{ route('admin.create') }}" class="menu-button main-btn">ユーザー新規登録</a>
-            <a href=" " class="menu-button main-btn">ユーザー編集・削除</a>
+            <a href="{{ route('admin.search') }}" class="menu-button main-btn">ユーザー編集・削除</a>
         </div>
     </div>
     <div class="back__button">

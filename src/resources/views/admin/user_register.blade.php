@@ -15,7 +15,7 @@
         {{ session('success') }}
     </div>
     @endif
-    
+
     <form class="form" action="{{ route('admin.store') }}" method="POST">
         @csrf
         @php
@@ -34,11 +34,11 @@
             @enderror 
         </div>
         <div class="form-group">
-            <label class="blue" for="user_name" style="width: 150px; margin-right: 10px;">保護者名:<span class="required-label">(必須)</span></label>
+            <label class="blue" for="name" style="width: 150px; margin-right: 10px;">ユーザー名:<span class="required-label">(必須)</span></label>
             <div style="position: relative; flex: 1;">
-                <input type="text" id="user_name" name="user_name" class="form-control" value="{{ old('user_name') }}" required>
+                <input type="text" id="name" name="name" class="form-control" value="{{ old('name') }}" required>
             </div>
-            @error('user_name') 
+            @error('name') 
             <div class="text-danger"> {{ $message }}</div>
             @enderror 
         </div>
@@ -57,9 +57,9 @@
             <div style="position: relative; flex: 1;">
                 <select id="role" name="role" class="form-control" required>
                     <option value="">選択してください</option>
-                    <option value="ユーザー" {{ old('role') == 'ユーザー' ? 'selected' : '' }}>ユーザー</option>
-                    <option value="職員" {{ old('role') == '職員' ? 'selected' : '' }}>職員</option>
-                    <option value="管理者" {{ old('role') == '管理者' ? 'selected' : '' }}>管理者</option>
+                    <option value="user" {{ old('role') == 'user' ? 'selected' : '' }}>user</option>
+                    <option value="teacher" {{ old('role') == 'teacher' ? 'selected' : '' }}>teacher</option>
+                    <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>admin</option>
                 </select>
             </div>
             @error('role') 

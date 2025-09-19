@@ -1,0 +1,189 @@
+.content {
+    margin: 80px auto;
+    max-width: 760px;
+    padding-top: 120px;
+}
+
+.heading {
+    text-align: center;
+    position: fixed;
+    top: 80px;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    z-index: 1100;
+}
+
+h2 {
+    display: inline-block;
+    border-bottom: 2px solid #4f4c4c;
+    padding-bottom: 4px;
+    color: #4f4c4c;
+}
+
+.search form {
+    display: flex;
+    align-items: flex-end;
+    /* 下揃えで整列 */
+    gap: 15px;
+    /* 各項目の間隔 */
+}
+
+.search .form-group {
+    flex: 1;
+    /* 幅を均等に伸ばす */
+    margin-bottom: 0;
+    /* 縦並び用の余白を消す */
+}
+
+.search label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 6px;
+    color: #333;
+}
+
+.search .form-control {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+}
+
+.search .btn {
+    height: 34px;
+    padding: 0 20px;
+    font-size: 16px;
+    white-space: nowrap;
+    border: none;
+    background-color: #28a745;
+    border-radius: 3px;
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    /* 枠線を重ねない */
+    margin-top: 20px;
+    font-size: 14px;
+    background-color: #fff;
+}
+
+.table-bordered th,
+.table-bordered td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.table thead th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+}
+
+/* 偶数行の背景色を変える */
+.table tbody tr:nth-child(even) {
+    background-color: #fdfdfd;
+}
+
+/* ホバー時の色 */
+.table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* 操作ボタンを横並びにする */
+.d-flex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gap-2 {
+    gap: 20px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 6px 12px;
+    font-size: 13px;
+    border-radius: 4px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-sm {
+    padding: 4px 8px;
+    font-size: 12px;
+}
+
+.btn-warning {
+    background-color: #efb507;
+    color: #fff;
+    border: none;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 6px;
+    list-style: none;
+    padding: 0;
+}
+
+.pagination .page-item .page-link {
+    color: #4f4c4c;
+    border: 1px solid #ddd;
+    padding: 6px 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.pagination .page-item .page-link:hover {
+    background-color: #f5f5f5;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #4f4c4c;
+    color: #fff;
+    border-color: #4f4c4c;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #ccc;
+    pointer-events: none;
+    background-color: #f9f9f9;
+}
+
+.back__button {
+    text-align: center;
+    width: 100px;
+    margin: 60px auto;
+    padding: 5px;
+    height: 35px;
+    border: none;
+    border-radius: 3px;
+    background: #808080;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.back {
+    color: #fff;
+    text-decoration: none;
+}
+

@@ -1,5 +1,5 @@
 .content {
-    margin: 80px auto;
+    margin: 160px auto 40px;
     max-width: 760px;
 }
 
@@ -21,16 +21,15 @@ h2 {
 }
 
 .alert-success {
-    position: relative;
-    margin-top: 120px;
+    margin: 20px auto;
     text-align: center;
     color: green;
-    z-index: 1200;
+    z-index: 1;
 }
 
 .form {
     max-width: 650px;
-    margin: 200px auto 20px;
+    margin: 40px auto;
     padding: 40px;
     border-radius: 10px;
     background-color: #f9f9f9;

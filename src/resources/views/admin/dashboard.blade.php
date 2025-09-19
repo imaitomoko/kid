@@ -19,7 +19,6 @@
         </div>
         <div class="sub-menu">
             <a href="{{ route('admin.user') }}" class="menu-button sub-btn">ユーザー管理</a>
-            <a href="" class="menu-button sub-btn">職員管理</a>
             <a href="" class="menu-button sub-btn">料金管理</a>
         </div>
     </div>
