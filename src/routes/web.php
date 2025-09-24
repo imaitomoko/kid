@@ -5,6 +5,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MypageController;
 use App\Http\Controllers\AdminListController;
 use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\AdminFeeController;
+
 
 
 /*
@@ -42,7 +44,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/edit/{id}', [AdminUserController::class, 'edit'])->name('admin.edit');
     Route::post('/update/{id}', [AdminUserController::class, 'update'])->name('admin.update');
     Route::delete('/destroy/{id}', [AdminUserController::class, 'destroy'])->name('admin.destroy');
-
+    Route::get('/fees', [AdminFeeController::class, 'index'])->name('admin.fee.index');
+    Route::post('/fees', [AdminFeeController::class, 'store'])->name('admin.fee.store');
+    Route::put('fees/update/{id}', [AdminFeeController::class, 'update'])->name('admin.fee.update');
+    Route::delete('fees/destroy/{id}', [AdminFeeController::class, 'destroy'])->name('admin.fee.destroy');
 });
 
 
