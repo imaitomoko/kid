@@ -1,0 +1,87 @@
+.content {
+    margin: 80px auto;
+    max-width: 1000px;
+    padding-top: 120px;
+}
+
+.heading {
+    text-align: center;
+    position: fixed;
+    top: 100px;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    z-index: 1100;
+}
+
+h2 {
+    display: inline-block;
+    border-bottom: 2px solid #4f4c4c;
+    padding-bottom: 4px;
+    color: #4f4c4c;
+}
+
+.month-navigation {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.month {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.calendar {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.calendar th {
+    border: 1px solid #ccc;
+    width: 14.2%;
+    text-align: center;
+    padding: 10px;
+    background-color: #f0f0f0;
+    /* 曜日ヘッダーの背景色 */
+}
+
+.calendar td {
+    border: 1px solid #ccc;
+    width: 14.2%;
+    text-align: center;
+    padding: 10px;
+    padding-bottom: 25px;
+    vertical-align: top;
+}
+
+.status-btn {
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    background: #007bff;
+    color: white;
+    border-radius: 4px;
+}
+
+.status-btn:hover {
+    background: #0056b3;
+}
+
+.back__button {
+    text-align: center;
+    width: 100px;
+    margin: 60px auto;
+    padding: 5px;
+    height: 35px;
+    border: none;
+    border-radius: 3px;
+    background: #808080;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.back {
+    color: #fff;
+    text-decoration: none;
+}

@@ -1,0 +1,114 @@
+.content {
+    margin: 80px auto;
+    max-width: 1000px;
+    padding-top: 120px;
+}
+
+.heading {
+    text-align: center;
+    position: fixed;
+    top: 100px;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    z-index: 1100;
+}
+
+h2 {
+    display: inline-block;
+    border-bottom: 2px solid #4f4c4c;
+    padding-bottom: 4px;
+    color: #4f4c4c;
+}
+
+.mb-3 {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.mx-3 {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* テーブル全体 */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+/* ヘッダーセル */
+.table th {
+    background-color: #1eb204;
+    color: #fafafa;
+    font-weight: bold;
+    padding: 8px;
+    border: 1px solid #ccc;
+}
+
+/* データセル */
+.table td {
+    padding: 5px;
+    border: 1px solid #ccc;
+    vertical-align: middle;
+}
+
+/* 時間セル（左端） */
+/*.table td:first-child {
+    font-weight: bold;
+    background-color: #cef6bb;
+}*/
+
+.table tbody tr:nth-child(odd) td/*td:not(:first-child)*/ {
+    background-color: #fbfefb;
+    /* 奇数行 */
+}
+
+.table tbody tr:nth-child(even) td/*td:not(:first-child)*/ {
+    background-color: #e7f5e5;
+    /* 偶数行 */
+}
+
+/* 数字入力欄 */
+.table input[type="number"] {
+    width: 50px;
+    /* 必要に応じて調整 */
+    padding: 4px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.btn-container {
+    text-align: center;
+    /* ボタンを中央揃え */
+    margin-top: 25px;
+}
+/* 確定ボタン */
+.btn-primary {
+    padding: 6px 40px;
+    font-size: 14px;
+    border-radius: 4px;
+}
+
+.back__button {
+    text-align: center;
+    width: 100px;
+    margin: 60px auto;
+    padding: 5px;
+    height: 35px;
+    border: none;
+    border-radius: 3px;
+    background: #808080;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.back {
+    color: #fff;
+    text-decoration: none;
+}

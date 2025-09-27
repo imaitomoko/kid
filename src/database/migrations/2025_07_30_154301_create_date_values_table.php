@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('date_values', function (Blueprint $table) {
             $table->id();
             $table->date('date');
-            $table->string('value');
+            $table->string('value')->default('');
             $table->timestamps();
         });
     }

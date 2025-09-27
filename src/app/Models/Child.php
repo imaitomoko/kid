@@ -25,4 +25,9 @@ class Child extends Model
     {
         return $this->hasMany(Sibling::class);
     }
+
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
+    }
 }

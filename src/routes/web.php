@@ -6,6 +6,7 @@ use App\Http\Controllers\MypageController;
 use App\Http\Controllers\AdminListController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AdminFeeController;
+use App\Http\Controllers\AdminScheduleController;
 
 
 
@@ -36,6 +37,17 @@ Route::post('/teacher/logout', [AuthController::class, 'logout'])->defaults('rol
 // 管理者専用ルート
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin', [AdminListController::class, 'index'])->name('admin');
+    Route::get('/book-list', [AdminListController::class, 'list'])->name('book.list');
+    Route::post('/attendance/start/{reservation}', [AdminListController::class, 'start'])->name('attendance.start');
+    Route::post('/attendance/end/{reservation}', [AdminListController::class, 'end'])->name('attendance.end');
+    Route::post('/attendance/meal/{attendance}', [AdminListController::class, 'mealUsed'])->name('attendance.meal');
+    Route::post('/attendance/snack/{attendance}', [AdminListController::class, 'snackUsed'])->name('attendance.snack');
+
+    Route::get('/admin/schedule', [AdminScheduleController::class, 'index'])->name('admin.schedule');
+    Route::get('/admin/schedule/{date}', [AdminScheduleController::class, 'show'])->name('admin.schedule.show');
+    Route::post('/admin/schedule/{date}', [AdminScheduleController::class, 'update'])->name('admin.schedule.update');
+
+
     Route::get('/user', [AdminUserController::class, 'index'])->name('admin.user');
     Route::get('/create', [AdminUserController::class, 'create'])->name('admin.create');
     Route::post('/store', [AdminUserController::class, 'store'])->name('admin.store');
@@ -48,6 +60,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/fees', [AdminFeeController::class, 'store'])->name('admin.fee.store');
     Route::put('fees/update/{id}', [AdminFeeController::class, 'update'])->name('admin.fee.update');
     Route::delete('fees/destroy/{id}', [AdminFeeController::class, 'destroy'])->name('admin.fee.destroy');
+    
 });
 
 
