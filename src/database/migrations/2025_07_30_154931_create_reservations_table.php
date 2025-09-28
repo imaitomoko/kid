@@ -18,9 +18,10 @@ return new class extends Migration
             $table->boolean('meal')->nullable();
             $table->boolean('snack')->nullable();
             $table->string('status')->nullable();
-            $table->string('round_type');
-            $table->string('purpose');
+            $table->string('round_type')->nullable();
+            $table->string('purpose')->nullable();
             $table->string('note')->nullable();
+            $table->unique(['child_id', 'reservation_slot_id']);
             $table->timestamps();
         });
     }

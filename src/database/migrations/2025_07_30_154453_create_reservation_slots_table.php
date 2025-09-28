@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('date_value_id')->constrained('date_values')->onDelete('cascade');
             $table->time('slot_time');
-            $table->integer('capacity');
+            $table->integer('capacity')->default(0);
             $table->timestamps();
         });
     }

@@ -9,9 +9,16 @@
     <div class="heading">
         <h2>スケジュール管理</h2>
     </div>
+
+    @if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+    @endif
+
     <div class="mb-3">
         <a href="{{ route('admin.schedule.show', ['date' => $selectedDate->copy()->subWeek()->format('Y-m-d')]) }}"><< 前週</a>
-        <span class="mx-3">{{ $selectedDate->format('Y年m月d日') }} の予約枠</span>
+        <span class="mx-3">{{ $selectedDate->format('Y年m月d日') }} の週の予約枠</span>
         <a href="{{ route('admin.schedule.show', ['date' => $selectedDate->copy()->addWeek()->format('Y-m-d')]) }}">翌週 >></a>
     </div>
 
@@ -49,7 +56,7 @@
     </form>
 
     <div class="back__button">
-        <a class="back" href="{{ route('admin.user') }}">back</a>
+        <a class="back" href="{{ route('admin.schedule') }}">back</a>
     </div>
 </div>
 @endsection

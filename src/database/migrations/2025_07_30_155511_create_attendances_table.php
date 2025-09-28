@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
             $table->foreignId('reservation_id')->constrained('reservations')->onDelete('cascade');
-            $table->time('actual_start_time');
-            $table->time('actual_end_time');
+            $table->time('actual_start_time')->nullable();
+            $table->time('actual_end_time')->nullable();
             $table->string('meal_used')->nullable();
             $table->string('snack_used')->nullable();
             $table->timestamps();
