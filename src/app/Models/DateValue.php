@@ -15,4 +15,9 @@ class DateValue extends Model
     {
         return $this->hasMany(ReservationSlot::class);
     }
+
+    public function nonmemberReservations()
+    {
+        return $this->hasMany(NonmemberReservation::class, 'date_value_id');
+    }
 }

@@ -12,7 +12,7 @@
     <div class="menu-group">
         <div class="main-menu">
             <a href="{{ route('book.list') }}" class="menu-button main-btn">当日予約一覧</a>
-            <a href=" " class="menu-button main-btn">予約管理</a>
+            <a href="{{ route('admin.reservation') }} " class="menu-button main-btn">予約管理</a>
             <a href="{{ route('admin.schedule') }}" class="menu-button main-btn">スケジュール管理</a>
             <a href=" " class="menu-button main-btn">集計</a>
             <a href=" " class="menu-button main-btn">履歴管理</a>

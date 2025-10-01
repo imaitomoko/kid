@@ -7,6 +7,7 @@ use App\Http\Controllers\AdminListController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AdminFeeController;
 use App\Http\Controllers\AdminScheduleController;
+use App\Http\Controllers\AdminReservationController;
 
 
 
@@ -30,6 +31,7 @@ Route::get('/admin/login', [AuthController::class, 'showLogin'])->defaults('role
 Route::post('/admin/login', [AuthController::class, 'login'])->defaults('role', 'admin');
 Route::post('/admin/logout', [AuthController::class, 'logout'])->defaults('role', 'admin')->name('admin.logout');
 
+
 Route::get('/teacher/login', [AuthController::class, 'showLogin'])->defaults('role', 'teacher')->name('teacher.login');
 Route::post('/teacher/login', [AuthController::class, 'login'])->defaults('role', 'teacher');
 Route::post('/teacher/logout', [AuthController::class, 'logout'])->defaults('role', 'teacher')->name('teacher.logout');
@@ -46,6 +48,18 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/schedule', [AdminScheduleController::class, 'index'])->name('admin.schedule');
     Route::get('/admin/schedule/{date}', [AdminScheduleController::class, 'show'])->name('admin.schedule.show');
     Route::post('/admin/schedule/{date}', [AdminScheduleController::class, 'update'])->name('admin.schedule.update');
+
+    Route::get('admin/reservations', [AdminReservationController::class, 'calendar'])->name('admin.reservation');
+    Route::get('admin/reservations/{date}', [AdminReservationController::class, 'list'])->name('admin.reservation.list');
+    Route::delete('/admin/reservations/{id}/cancel', [AdminReservationController::class, 'cancel'])
+    ->name('admin.reservation.cancel');
+
+    Route::get('admin/nonmember/create/{date}', [AdminReservationController::class, 'createNonMember'])
+    ->name('admin.nonmember.create');
+    Route::post('admin/nonmember/store', [AdminReservationController::class, 'storeNonMember'])
+    ->name('admin.nonmember.store');
+    Route::get('admin/reservations/member-proxy/create', [ReservationController::class, 'createMemberProxy'])
+    ->name('admin.member_proxy.create');
 
 
     Route::get('/user', [AdminUserController::class, 'index'])->name('admin.user');

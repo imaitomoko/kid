@@ -1,0 +1,132 @@
+.content {
+    margin: 80px auto;
+    max-width: 1000px;
+    padding-top: 120px;
+}
+
+.heading {
+    text-align: center;
+    position: fixed;
+    top: 100px;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    z-index: 1100;
+}
+
+h2 {
+    display: inline-block;
+    border-bottom: 2px solid #4f4c4c;
+    padding-bottom: 4px;
+    color: #4f4c4c;
+}
+
+h3 {
+    color: #4f4c4c;
+    text-align: center;
+}
+
+/* テーブル全体 */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border: 1px solid #c7dbce;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* ヘッダー */
+.table thead th {
+    background: #e7f5e5;
+    color: #333;
+    font-weight: 600;
+    text-align: center;
+    padding: 12px;
+    border-bottom: 2px solid #dee2e6;
+}
+
+/* 行・セル */
+.table tbody td {
+    padding: 12px;
+    text-align: center;
+    vertical-align: middle;
+    border-bottom: 1px solid #e9ecef;
+}
+
+/* 交互行（ゼブラ） */
+.table tbody tr:nth-child(even) {
+    background: #fdfdfd;
+}
+
+/* ホバー時 */
+.table tbody tr:hover {
+    background: #f1f8ff;
+    transition: background 0.2s ease;
+}
+
+/* 空データ時 */
+.table tbody td.text-center {
+    color: #999;
+    font-style: italic;
+}
+
+/* キャンセルボタン */
+.btn-danger.btn-sm {
+    padding: 5px 10px;
+    font-size: 13px;
+    border-radius: 5px;
+    transition: background 0.2s;
+}
+
+.btn-danger.btn-sm:hover {
+    background: #c82333;
+}
+
+/* 下部の2つのボタン */
+.d-flex {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 50px;
+}
+
+.btn-lg {
+    padding: 12px 24px;
+    font-size: 18px;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.btn-outline-primary:hover {
+    background: #0d6efd;
+    color: #fff;
+}
+
+.btn-outline-success:hover {
+    background: #198754;
+    color: #fff;
+}
+
+/* レスポンシブ（画面が小さいとき横スクロール） */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.back__button {
+    text-align: center;
+    width: 100px;
+    margin: 60px auto;
+    padding: 5px;
+    height: 35px;
+    border: none;
+    border-radius: 3px;
+    background: #808080;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.back {
+    color: #fff;
+    text-decoration: none;
+}
