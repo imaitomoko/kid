@@ -44,7 +44,8 @@ class MypageController extends Controller
             'contact_name' => 'request|string|max:255',
             'relationship' => 'request|string|max:10',
             'phone_number' => 'request|string|max:255',
-        ])
+        ]);
+        return back();
     }
     //
 }

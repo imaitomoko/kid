@@ -19,4 +19,9 @@ class ReservationSlot extends Model
     {
         return $this->belongsTo(DateValue::class);
     }
+
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class, 'reservation_slot_id');
+    }
 }

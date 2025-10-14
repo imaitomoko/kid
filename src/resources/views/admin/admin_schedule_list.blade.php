@@ -41,7 +41,7 @@
                             @php $dateStr = $d->format('Y-m-d'); @endphp
                             <td>
                                 <input type="number" min="0" name="capacity[{{ $dateStr }}][{{ $t }}]" 
-                                    value="{{ $slots[$dateStr][$t]->capacity ?? 0 }}" 
+                                    value="{{ old('capacity.' . $dateStr . '.' . $t, $slots[$dateStr][$t]->capacity ?? 0) }}"
                                     style="width:50px;">
                             </td>
                         @endforeach

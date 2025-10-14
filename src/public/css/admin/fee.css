@@ -36,10 +36,22 @@ h2 {
     font-weight: bold;
 }
 
+th {
+    text-align: center;
+}
+
 .group {
     display: flex;
     justify-content: space-between;
 }
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
 
 .mb-3 {
     width: 30%;

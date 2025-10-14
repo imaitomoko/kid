@@ -11,6 +11,8 @@ use App\Http\Controllers\AdminReservationController;
 
 
 
+
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -37,13 +39,23 @@ Route::post('/teacher/login', [AuthController::class, 'login'])->defaults('role'
 Route::post('/teacher/logout', [AuthController::class, 'logout'])->defaults('role', 'teacher')->name('teacher.logout');
 
 // 管理者専用ルート
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin', [AdminListController::class, 'index'])->name('admin');
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
+    Route::get('/', [AdminListController::class, 'index'])->name('admin');
     Route::get('/book-list', [AdminListController::class, 'list'])->name('book.list');
-    Route::post('/attendance/start/{reservation}', [AdminListController::class, 'start'])->name('attendance.start');
-    Route::post('/attendance/end/{reservation}', [AdminListController::class, 'end'])->name('attendance.end');
-    Route::post('/attendance/meal/{attendance}', [AdminListController::class, 'mealUsed'])->name('attendance.meal');
-    Route::post('/attendance/snack/{attendance}', [AdminListController::class, 'snackUsed'])->name('attendance.snack');
+    Route::post('/attendance/start/{id}', [AdminListController::class, 'start'])->name('attendance.start');
+    Route::post('/attendance/end/{id}', [AdminListController::class, 'end'])->name('attendance.end');
+
+    Route::put('/attendance/{id}/update-start', [AdminListController::class, 'updateStartTime'])->name('attendance.updateStartTime');
+    Route::delete('/attendance/{id}/delete-start', [AdminListController::class, 'deleteStartTime'])->name('attendance.deleteStartTime');
+    Route::put('/attendance/{id}/update-end', [AdminListController::class, 'updateEndTime'])->name('attendance.updateEndTime');
+    Route::delete('/attendance/{id}/delete-end', [AdminListController::class, 'deleteEndTime'])->name('attendance.deleteEndTime');
+
+    Route::post('/attendance/meal/{id}', [AdminListController::class, 'mealUsed'])->name('attendance.meal');
+    Route::post('/attendance/snack/{id}', [AdminListController::class, 'snackUsed'])->name('attendance.snack');
+    Route::delete('/attendance/meal/{id}', [AdminListController::class, 'deleteMeal'])->name('attendance.meal.delete');
+    Route::delete('/attendance/snack/{id}', [AdminListController::class, 'deleteSnack'])->name('attendance.snack.delete');
+
+    Route::post('/admin/book-list/accounted', [AdminListController::class, 'updateAccounted'])->name('admin.book_list.accounted');
 
     Route::get('/admin/schedule', [AdminScheduleController::class, 'index'])->name('admin.schedule');
     Route::get('/admin/schedule/{date}', [AdminScheduleController::class, 'show'])->name('admin.schedule.show');
@@ -58,8 +70,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     ->name('admin.nonmember.create');
     Route::post('admin/nonmember/store', [AdminReservationController::class, 'storeNonMember'])
     ->name('admin.nonmember.store');
-    Route::get('admin/reservations/member-proxy/create', [ReservationController::class, 'createMemberProxy'])
+    Route::get('admin/member_proxy/{date}', [AdminReservationController::class, 'createMemberProxy'])
     ->name('admin.member_proxy.create');
+    Route::post('admin/reservations/member-proxy/store', [AdminReservationController::class, 'storeMemberProxy'])
+    ->name('admin.member_proxy.store');
 
 
     Route::get('/user', [AdminUserController::class, 'index'])->name('admin.user');
@@ -79,9 +93,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
 
 // 先生専用ルート
-Route::middleware(['auth', 'role:teacher'])->group(function () {
-    Route::get('/teacher/dashboard', [TeacherController::class, 'index']);
-});
+//Route::middleware(['auth', 'role:teacher'])->group(function () {
+  //  Route::get('/teacher/dashboard', [TeacherController::class, 'index']);
+//});
 
 // 一般ユーザー
 Route::middleware(['auth', 'role:user'])->group(function () {

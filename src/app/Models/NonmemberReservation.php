@@ -42,4 +42,9 @@ class NonmemberReservation extends Model
     {
         return $this->is_under_3 ? '3歳未満' : '3歳以上';
     }
+
+    public function attendance()
+    {
+        return $this->morphOne(Attendance::class, 'reservable');
+    }
 }

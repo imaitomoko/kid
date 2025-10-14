@@ -8,7 +8,7 @@ use App\Models\Reservation;
 use App\Models\NonmemberReservation;
 use App\Models\ReservationSlot;
 use App\Models\DateValue;
-
+use App\Models\Child;
 
 
 class AdminReservationController extends Controller
@@ -146,6 +146,43 @@ class AdminReservationController extends Controller
         return redirect()->route('admin.reservation.list', ['date' => $request->input('date')])
             ->with('success', '非会員予約を登録しました');
     }
+
+    public function createMemberProxy(Request $request, $date)
+    {
+        $children = collect();
+
+        if ($request->filled('child_search')) {
+            $search = $request->input('child_search');
+            $children = Child::where('child_name', 'like', "%{$search}%")->get();
+        }
+
+        $dateValue = DateValue::firstOrCreate(['date' => $date]);
+        $slots = ReservationSlot::where('date_value_id', $dateValue->id)
+            ->withCount('reservations')
+            ->orderBy('slot_time')
+            ->get();
+
+        return view('admin.member_book', compact('date', 'children', 'slots'));
+    }
+
+    public function storeMemberProxy(Request $request)
+    {
+        $validated = $request->validate([
+            'child_id' => 'required|exists:children,id',
+            'reservation_slot_id' => 'required|exists:reservation_slots,id',
+            'meal' => 'nullable|boolean',
+            'snack' => 'nullable|boolean',
+            'round_type' => 'required|string',
+            'purpose' => 'required|string',
+            'note' => 'nullable|string|max:500',
+        ]);
+
+        Reservation::create($validated);
+
+        return redirect()->route('admin.reservation.list', ['date' => $request->input('date')])
+            ->with('success', '会員予約を登録しました。');
+    }
+
 
 
     //

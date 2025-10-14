@@ -10,13 +10,14 @@ class Attendance extends Model
     use HasFactory;
 
     protected $fillable = [
-        'reservation_id', 'actual_start_time', 'actual_end_time',
-        'meal_used', 'snack_used'
+        'reservable_id', 'reservable_type', 'actual_start_time', 'actual_end_time',
+        'meal_used', 'snack_used',
+        'accounted',
     ];
 
-    public function reservation()
+    public function reservable()
     {
-        return $this->belongsTo(Reservation::class);
+        return $this->morphTo();
     }
 
     public function feeItems()

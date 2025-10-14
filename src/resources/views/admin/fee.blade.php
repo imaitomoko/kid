@@ -103,7 +103,6 @@
                             <th>金額</th>
                             <th>適用開始日</th>
                             <th>適用終了日</th>
-                            <th>編集</th>
                             <th>操作</th>
                         </tr>
                     </thead>
@@ -137,20 +136,18 @@
                                     <input type="date" name="end_date" value="{{ $item->end_date ? \Carbon\Carbon::parse($item->end_date)->format('Y-m-d') : '' }}" class="form-control">
                                 </td>
                                 <td>
-                                    <div class="d-flex gap-2">
+                                    <div class="button-group">
                                         <form action="{{ route('admin.fee.update', $item->id) }}" method="POST">
                                             @csrf
                                             @method('PUT')
                                             <button type="submit" class="btn btn-success btn-sm">更新</button>
                                         </form>
+                                        <form action="{{ route('admin.fee.destroy', $item->id) }}" method="POST" onsubmit="return confirm('本当に削除しますか？');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm">削除</button>
+                                        </form>
                                     </div>
-                                </td>
-                                <td>
-                                    <form action="{{ route('admin.fee.destroy', $item->id) }}" method="POST" onsubmit="return confirm('本当に削除しますか？');">
-                                    @csrf
-                                    @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm">削除</button>
-                                    </form>
                                 </td>
                             </tr>
                         @endforeach

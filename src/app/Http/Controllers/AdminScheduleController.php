@@ -76,13 +76,26 @@ class AdminScheduleController extends Controller
         // 週内の reservation_slots を取得（なければ空）
         $slots = [];
         foreach ($weekDates as $d) {
-            $dateValue = DateValue::firstOrCreate(['date' => $d->format('Y-m-d')]);
+            $dateStr = $d->format('Y-m-d');
+            $dateValue = DateValue::firstOrCreate(['date' => $dateStr]);
+
+            $existingSlots = ReservationSlot::where('date_value_id', $dateValue->id)
+                ->get();
+
             foreach ($timeSlots as $t) {
-                $slot = ReservationSlot::firstOrCreate(
-                    ['date_value_id' => $dateValue->id, 'slot_time' => $t],
-                    ['capacity' => 0]
-                );
-                $slots[$d->format('Y-m-d')][$t] = $slot;
+                $slotTime = Carbon::parse($t)->format('H:i:s');
+                $slot = $existingSlots->firstWhere('slot_time', $slotTime);
+
+                // あればそれを、なければ空のオブジェクト
+                if (!$slot) {
+                    $slot = new ReservationSlot([
+                        'date_value_id' => $dateValue->id,
+                        'slot_time' => $slotTime,
+                        'capacity' => 0,
+                    ]);
+                }
+
+                $slots[$dateStr][$t] = $slot;
             }
         }
 
@@ -92,26 +105,40 @@ class AdminScheduleController extends Controller
     // POSTで容量を保存
     public function update(Request $request, $date)
     {
+
         $weekStart = Carbon::parse($date)->startOfWeek(Carbon::MONDAY);
         $weekDates = [];
         for ($i = 0; $i < 5; $i++) {
             $weekDates[] = $weekStart->copy()->addDays($i);
         }
 
+        $capacityData = $request->input('capacity', []);
+
         foreach ($weekDates as $d) {
             $dateStr = $d->format('Y-m-d');
             $dateValue = DateValue::firstOrCreate(['date' => $dateStr]);
 
-            foreach ($request->input('capacity.' . $dateStr, []) as $time => $cap) {
-                $slot = ReservationSlot::firstOrCreate(
-                    ['date_value_id' => $dateValue->id, 'slot_time' => $time]
-                );
-                $slot->capacity = max(0, intval($cap)); // 負の値は0に
-                $slot->save();
+            if (!empty($capacityData[$dateStr])) {
+                foreach ($capacityData[$dateStr] as $time => $cap) {
+                    $slotTime = Carbon::parse($time)->format('H:i:s');
+
+                    $slot = ReservationSlot::where('date_value_id', $dateValue->id)
+                                            ->where('slot_time', $slotTime)
+                                            ->first();
+                    if (!$slot) {
+                        $slot = new ReservationSlot();
+                        $slot->date_value_id = $dateValue->id;
+                        $slot->slot_time = $slotTime;
+                    }
+
+                    $slot->capacity = max(0, intval($cap));
+                    $slot->save();
+                }
             }
         }
 
-        return redirect()->back()->with('success', '予約枠を更新しました。');
+        return redirect()->route('admin.schedule.show', ['date' => reset($weekDates)->format('Y-m-d')])
+        ->with('success', '予約枠を更新しました。');
     }
     //
 }
