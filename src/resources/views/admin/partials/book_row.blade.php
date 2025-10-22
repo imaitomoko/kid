@@ -1,7 +1,6 @@
 @php
-    $attendance = $reservation->attendance ?? null;
-    $feeItems = $attendance->feeItems ?? collect();
-    $feeTotal = $feeItems->sum(fn($f) => $f->feeItem->amount ?? 0);
+    $attendance = $reservation->attendance;
+    $feeTotal = $attendance ? $attendance->feeItems->sum(fn($f) => $f->feeItem->amount ?? 0) : 0;
 @endphp
 
 <tr>
@@ -90,8 +89,6 @@
             </form>
         @endif
 
-        <br>
-
         @if($reservation->snack)
             <div class="d-flex align-items-center justify-content-center gap-1">
                 <span>おやつ</span>
@@ -108,7 +105,7 @@
             <form action="{{ route('attendance.snack', ['id' => $reservation->id]) }}" method="POST">
                 @csrf
                 <input type="hidden" name="nonmember" value="{{ $isNonmember ? '1' : '0' }}">
-                <button type="submit" class="btn btn-primary btn-sm">おやつ 利用</button>
+                <button type="submit" class="btn btn-primary btn-sm">おやつ利用</button>
             </form>
         @endif
     </td>

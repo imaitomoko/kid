@@ -26,38 +26,138 @@ h3 {
     text-align: center;
 }
 
-.form-inline-simple {
+.search-form {
+    max-width: 400px;
+    /* フォーム全体の幅を制限（任意） */
+}
+
+.search-input {
+    height: 42px;
+    /* テキストボックスの高さを固定 */
+    font-size: 14px;
+}
+
+.search-btn {
+    height: 42px;
+    white-space: nowrap;
+    /* ← テキストの折り返しを防ぐ！ */
+    font-size: 14px;
+    padding: 0 20px;
+    border-radius: 6px;
+    background-color: #007bff;
+    border: none;
+    display: flex;
+    /* ← 高さ中央揃えのため */
+    align-items: center;
+    /* 縦方向中央 */
+    justify-content: center;
+    /* 横方向中央 */
+    transition: background-color 0.2s ease;
+}
+.search-btn:hover {
+    background-color: #0056b3;
+    /* ホバー時の濃い青 */
+}
+
+.custom-table {
+    border-collapse: collapse;
+    width: 100%;
+    text-align: center;
+}
+
+.custom-table th {
+    background-color: #2e7d32;
+    color: #fff;
+    padding: 10px;
+}
+
+.custom-table td {
+    padding: 8px;
+    color: #444;
+}
+
+.custom-table tbody tr:nth-child(odd) {
+    background-color: #fff;
+}
+
+.custom-table tbody tr:nth-child(even) {
+    background-color: #edf8ee;
+}
+
+.custom-table,
+.custom-table th,
+.custom-table td {
+    border: 1px solid #dee2e6;
+}
+
+.form-check {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-bottom: 1rem;
+    margin-bottom: 8px;
 }
 
-.form-inline-simple input[type="text"] {
-    flex: 1;
-    padding: 6px 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+.form-check-input {
+    margin-right: 10px;
 }
 
-.form-inline-simple button {
-    padding: 6px 20px;
-    border: none;
-    border-radius: 4px;
-    background-color: #0d6efd;
-    color: #fff;
-    cursor: pointer;
-}
-
-.form-inline-simple button:hover {
-    background-color: #0b5ed7;
-}
-
-
-.mb-3 {
+.form-wrapper {
+    width: 100%;
+    max-width: 1000px;
+    margin: 20px auto;
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
 }
 
-.mb-4 {
-    margin: 30px auto;
+.form-check-inline {
+    display: flex;
+    align-items: center;
+    margin: 0 50px;
 }
+
+.form-select-group {
+    margin: 0 50px;
+}
+
+.form-check-label {
+    font-weight: bold;
+}
+
+.form-label {
+    font-weight: bold;
+
+}
+
+.form-wrapper .form-check-group,
+.form-wrapper .form-select-group {
+    display: flex;
+    justify-content: center;
+    /* 中央揃え */
+    align-items: center;
+    gap: 16px;
+    /* 内部の要素間の余白 */
+}
+
+.note {
+    width: 100%;
+}
+
+.back__button {
+    text-align: center;
+    width: 100px;
+    margin: 60px auto;
+    padding: 5px;
+    height: 35px;
+    border: none;
+    border-radius: 3px;
+    background: #808080;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.back {
+    color: #fff;
+    text-decoration: none;
+}
+

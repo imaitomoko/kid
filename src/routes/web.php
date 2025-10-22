@@ -50,8 +50,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::put('/attendance/{id}/update-end', [AdminListController::class, 'updateEndTime'])->name('attendance.updateEndTime');
     Route::delete('/attendance/{id}/delete-end', [AdminListController::class, 'deleteEndTime'])->name('attendance.deleteEndTime');
 
-    Route::post('/attendance/meal/{id}', [AdminListController::class, 'mealUsed'])->name('attendance.meal');
-    Route::post('/attendance/snack/{id}', [AdminListController::class, 'snackUsed'])->name('attendance.snack');
+    Route::post('/attendance/meal/{id}', [AdminListController::class, 'meal'])->name('attendance.meal');
+    Route::post('/attendance/snack/{id}', [AdminListController::class, 'snack'])->name('attendance.snack');
     Route::delete('/attendance/meal/{id}', [AdminListController::class, 'deleteMeal'])->name('attendance.meal.delete');
     Route::delete('/attendance/snack/{id}', [AdminListController::class, 'deleteSnack'])->name('attendance.snack.delete');
 

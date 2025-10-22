@@ -11,7 +11,7 @@ class Attendance extends Model
 
     protected $fillable = [
         'reservable_id', 'reservable_type', 'actual_start_time', 'actual_end_time',
-        'meal_used', 'snack_used',
+        'meal_used', 'snack_used', 'total_fee',
         'accounted',
     ];
 

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->time('actual_end_time')->nullable();
             $table->string('meal_used')->nullable();
             $table->string('snack_used')->nullable();
+            $table->integer('total_fee')->default(0);
             $table->boolean('accounted')->default(false);
             $table->timestamps();
         });

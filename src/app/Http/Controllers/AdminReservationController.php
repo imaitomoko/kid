@@ -44,8 +44,8 @@ class AdminReservationController extends Controller
         $reservations = collect();
 
         foreach ($memberReservations->groupBy('child_id') as $childId => $group) {
-            $start = $group->min(fn($r) => $r->reservationSlot->slot_time);
-            $end   = $group->max(fn($r) => $r->reservationSlot->slot_time);
+            $start = $group->min(fn($r) => $r->slot->slot_time);
+            $end   = $group->max(fn($r) => $r->slot->slot_time);
             $end   = \Carbon\Carbon::parse($end)->addMinutes(30)->format('H:i'); // 30分枠想定
 
             $reservations->push([
@@ -169,20 +169,51 @@ class AdminReservationController extends Controller
     {
         $validated = $request->validate([
             'child_id' => 'required|exists:children,id',
-            'reservation_slot_id' => 'required|exists:reservation_slots,id',
+            'reservation_slot_ids' => 'required|array',
+            'reservation_slot_ids.*' => 'exists:reservation_slots,id',
             'meal' => 'nullable|boolean',
             'snack' => 'nullable|boolean',
             'round_type' => 'required|string',
             'purpose' => 'required|string',
             'note' => 'nullable|string|max:500',
+            'date' => 'required|date',
         ]);
 
-        Reservation::create($validated);
+        $childId = $validated['child_id'];
 
-        return redirect()->route('admin.reservation.list', ['date' => $request->input('date')])
+        foreach ($validated['reservation_slot_ids'] as $slotId) {
+        // 対象スロットを取得
+            $slot = \App\Models\ReservationSlot::find($slotId);
+
+            // 空きがあるか確認
+            if ($slot && $slot->capacity > 0) {
+
+                // 二重予約防止チェック
+                $already = \App\Models\Reservation::where('child_id', $childId)
+                    ->where('reservation_slot_id', $slotId)
+                    ->exists();
+
+                if (!$already) {
+                    // 予約登録
+                    \App\Models\Reservation::create([
+                        'child_id' => $childId,
+                        'reservation_slot_id' => $slotId,
+                        'meal' => $request->input('meal', 0),
+                        'snack' => $request->input('snack', 0),
+                        'round_type' => $validated['round_type'],
+                        'purpose' => $validated['purpose'],
+                        'note' => $validated['note'] ?? null,
+                    ]);
+
+                    // 空き枠を1減らす
+                    $slot->decrement('capacity', 1);
+                }
+            }
+        }
+
+        return redirect()->route('admin.reservation.list', ['date' => $validated['date']])
             ->with('success', '会員予約を登録しました。');
     }
-
 
 
     //
