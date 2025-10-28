@@ -53,6 +53,7 @@ class AdminReservationController extends Controller
                 'child_name' => $group->first()->child->child_name ?? '',
                 'time'       => \Carbon\Carbon::parse($start)->format('H:i') . ' ~ ' . $end,
                 'id'         => $group->first()->id,
+                'child_id'   => $childId,
             ]);
         }
 
@@ -64,6 +65,9 @@ class AdminReservationController extends Controller
                             . ' ~ ' 
                             . \Carbon\Carbon::parse($reservation->end_time)->format('H:i'),
                 'id'         => $reservation->id,
+                'child_id'   => null, // 会員とキーを揃える
+                'start_time' => $reservation->start_time,
+                'end_time'   => $reservation->end_time,
             ]);
         }
 
@@ -73,22 +77,52 @@ class AdminReservationController extends Controller
         return view('admin.admin_reservation_list', compact('date', 'reservations'));
     }
 
-    public function cancel($id)
+    public function cancel(Request $request)
     {
-    // 会員 or 非会員どちらの予約かを判定して削除
-        $reservation = Reservation::find($id);
-        if ($reservation) {
-            $reservation->delete();
-            return back()->with('success', '会員予約をキャンセルしました。');
+        $childId = $request->input('child_id');   // 会員予約キャンセル用
+        $date    = $request->input('date');       // 会員・非会員共通
+        $startTime = $request->input('start_time'); // 非会員キャンセル用
+        $endTime   = $request->input('end_time');   // 非会員キャンセル用
+
+        $deleted = false;
+
+        // 会員予約キャンセル（子どもID＋日付でまとめて）
+        if ($childId) {
+            $memberReservations = Reservation::where('child_id', $childId)
+                ->whereHas('slot.dateValue', function ($q) use ($date) {
+                    $q->whereDate('date', $date);
+                })
+                ->get();
+
+            foreach ($memberReservations as $r) {
+                if ($r->slot) {
+                    $r->slot->increment('capacity', 1); // 予約枠を戻す
+                }
+                $r->delete();
+                $deleted = true;
+            }
         }
 
-        $nonmember = NonmemberReservation::find($id);
-        if ($nonmember) {
-            $nonmember->delete();
-            return back()->with('success', '非会員予約をキャンセルしました。');
+        // 非会員予約キャンセル（date_value_id + start/end_timeで絞る）
+        $nonMemberQuery = NonmemberReservation::whereHas('dateValue', function ($q) use ($date) {
+            $q->whereDate('date', $date);
+        });
+
+        if ($startTime && $endTime) {
+            $nonMemberQuery->where('start_time', $startTime)
+                            ->where('end_time', $endTime);
         }
 
-        return back()->with('error', '該当する予約が見つかりませんでした。');
+        $count = $nonMemberQuery->delete();
+        if ($count > 0) {
+            $deleted = true;
+        }
+
+        if ($deleted) {
+            return back()->with('success', '予約をキャンセルしました。');
+        } else {
+            return back()->with('error', '該当する予約は見つかりませんでした。');
+        }
     }
 
     public function createNonMember($date)

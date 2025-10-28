@@ -12,7 +12,9 @@
             -
             {{ \Carbon\Carbon::parse($reservation->end_time)->format('H:i') }}
         @else
-            {{ $reservation->slot->slot_time }} - <br>{{ $attendance?->actual_end_time ?? '--:--' }}
+            @foreach($reservation->merged_times as $time)
+                <div>{{ $time['start'] }}-{{ $time['end'] }}</div>
+            @endforeach
         @endif
     </td>
 
@@ -58,7 +60,7 @@
                         class="form-control form-control-sm" style="width:100px;">
                     <button type="submit" class="btn btn-primary btn-sm ms-1" title="編集"><i class="fa-solid fa-pen"></i></button>
                 </form>
-                <form action="{{ route('attendance.deleteEndTime', ['id' => $reservation->id]) }}" method="POST" onsubmit="return confirm('開始時刻を削除しますか？');">
+                <form action="{{ route('attendance.deleteEndTime', ['id' => $reservation->id]) }}" method="POST" onsubmit="return confirm('利用終了を削除しますか？');">
                     @csrf
                     @method('DELETE')
                     <input type="hidden" name="nonmember" value="{{ $isNonmember ? '1' : '0' }}">
@@ -114,7 +116,7 @@
     <td>{{ $isNonmember ? ($reservation->allergy ?? 'なし') : ($reservation->child->allergy ?? 'なし') }}</td>
 
     {{-- 利用料 --}}
-    <td>¥{{ number_format($feeTotal) }}</td>
+    <td>¥{{ number_format($reservation->attendance->total_fee ?? 0) }}</td>
 
     {{-- 会計チェック --}}
     <td>

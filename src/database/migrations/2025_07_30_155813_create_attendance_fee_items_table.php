@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('attendance_id')->constrained('attendances')->onDelete('cascade');
             $table->foreignId('fee_item_id')->constrained('fee_items')->onDelete('cascade');
+            $table->integer('amount')->nullable();
             $table->timestamps();
         });
     }

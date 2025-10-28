@@ -9,7 +9,7 @@ class AttendanceFeeItem extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['attendance_id', 'fee_item_id'];
+    protected $fillable = ['attendance_id', 'fee_item_id', 'amount'];
 
     public function attendance()
     {

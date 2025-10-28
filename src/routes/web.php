@@ -63,7 +63,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 
     Route::get('admin/reservations', [AdminReservationController::class, 'calendar'])->name('admin.reservation');
     Route::get('admin/reservations/{date}', [AdminReservationController::class, 'list'])->name('admin.reservation.list');
-    Route::delete('/admin/reservations/{id}/cancel', [AdminReservationController::class, 'cancel'])
+    Route::delete('/admin/reservations/cancel', [AdminReservationController::class, 'cancel'])
     ->name('admin.reservation.cancel');
 
     Route::get('admin/nonmember/create/{date}', [AdminReservationController::class, 'createNonMember'])

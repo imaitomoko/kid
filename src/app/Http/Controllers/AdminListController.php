@@ -18,105 +18,95 @@ class AdminListController extends Controller
         return view('admin.dashboard');
     }
 
-    private function calcFee($attendance)
+    //private function calcFee($attendance)
+    //{
+      //  if (!$attendance) return 0;
+
+        //return $attendance->feeItems
+          //  ->sum(fn($afi) => $afi->feeItem->amount ?? 0);
+
+    //}
+
+    private function registerFeeItem(Attendance $attendance, string $category, bool $isEnd = false)
     {
-        return optional($attendance->feeItems)->sum(fn($f) => $f->feeItem->amount ?? 0);
-    }
-
-    private function registerFeeItem(Attendance $attendance, string $category)
-    {
-    // 対応する料金マスタを取得
-        $feeItem = \App\Models\FeeItem::where('category', $category)->first();
-
-        if (!$feeItem) {
-            return; // 該当する料金設定がなければスキップ
-        }
-
-        if ($attendance->actual_start_time && $attendance->actual_end_time) {
+        // 保育料は end 時に作成
+        if ($isEnd && $category === 'basic' && $attendance->actual_start_time && $attendance->actual_end_time) {
             $start = \Carbon\Carbon::today()->setTimeFromTimeString($attendance->actual_start_time);
             $end = \Carbon\Carbon::today()->setTimeFromTimeString($attendance->actual_end_time);
             $minutes = $start->diffInMinutes($end);
-            $hours = ceil($minutes / 60); // 60分未満でも1時間、端数は切り上げ
-        } else {
-            $hours = 0;
-        }
+            $hours = ceil($minutes / 60);
 
-        if ($category === 'basic') {
+            // 保育料のカテゴリ決定
             if ($attendance->reservable_type === \App\Models\NonmemberReservation::class) {
                 $isUnder3 = (bool)$attendance->reservable->is_under_3;
                 $category = $isUnder3 ? '未満児保育' : '以上児保育';
-
             } else {
-             // 会員: childの誕生日から判定
                 $child = $attendance->reservable->child ?? null;
                 if ($child && $child->birthday) {
                     $age = \Carbon\Carbon::parse($child->birthday)->age;
                     $category = $age < 3 ? '未満児保育' : '以上児保育';
-
-                    \Log::info('会員の年齢区分判定', [
-                        'child_id' => $child->id ?? null,
-                        'birthday' => $child->birthday,
-                        'age' => $age,
-                        'category' => $category,
-                    ]);
                 } else {
-                   $category = '以上児保育'; // デフォルト3歳以上
+                    $category = '以上児保育';
                 }
             }
 
-            $feeItem = \App\Models\FeeItem::where('category', $category)->first();
-            if (!$feeItem) return;
+            $basicFeeItem = FeeItem::where('category', $category)->first();
+            if ($basicFeeItem) {
+                AttendanceFeeItem::updateOrCreate(
+                    [
+                        'attendance_id' => $attendance->id,
+                        'fee_item_id'   => $basicFeeItem->id,
+                    ],
+                    ['amount' => $basicFeeItem->amount * $hours]
+                );
+            }
         }
 
-        $attendanceFeeItem = $attendance->items()->where('fee_item_id', $feeItem->id)     ->first();
-        $amount = $feeItem->amount * $hours;
-
-        if ($attendanceFeeItem) {
-            $attendanceFeeItem->update(['amount' => $amount]);
-        } else {
-            $attendance->items()->create([
-                'fee_item_id' => $feeItem->id,
-                'amount' => $amount,
-            ]);
-        }
-
+    // meal/snack は start 時でも end 時でも作成
         if ($attendance->meal_used) {
-            $mealItem = \App\Models\FeeItem::where('category', '給食')->first();
+            $mealItem = FeeItem::where('category', '給食')->first();
             if ($mealItem) {
-                $attendance->items()->updateOrCreate(
-                    ['fee_item_id' => $mealItem->id],
+                AttendanceFeeItem::updateOrCreate(
+                    [
+                        'attendance_id' => $attendance->id,
+                        'fee_item_id'   => $mealItem->id,
+                    ],
                     ['amount' => $mealItem->amount]
                 );
             }
         }
 
         if ($attendance->snack_used) {
-            $snackItem = \App\Models\FeeItem::where('category', 'おやつ')->first();
+            $snackItem = FeeItem::where('category', 'おやつ')->first();
             if ($snackItem) {
-                $attendance->items()->updateOrCreate(
-                    ['fee_item_id' => $snackItem->id],
+                AttendanceFeeItem::updateOrCreate(
+                    [
+                        'attendance_id' => $attendance->id,
+                        'fee_item_id'   => $snackItem->id,
+                    ],
                     ['amount' => $snackItem->amount]
                 );
             }
         }
 
-        $attendance->load('items');
-
-        $total = $attendance->items->sum(fn($item) => $item->amount ?? 0);
-        $attendance->total_fee = $total;
-        $attendance->save();
+    // total_fee 更新
+        $total = AttendanceFeeItem::where('attendance_id', $attendance->id)->sum('amount');
+        $attendance->update(['total_fee' => $total]);
     }
 
     private function removeFeeItem(Attendance $attendance, string $category)
     {
         $feeItem = \App\Models\FeeItem::where('category', $category)->first();
 
-        if ($feeItem) {
-            $attendance->items()->where('fee_item_id', $feeItem->id)->delete();
-        }
+        if (!$feeItem) return;
 
-        $attendance->total_fee = $attendance->feeItems->sum(fn($f) => $f->feeItem->amount ?? 0);
-        $attendance->save();
+        $attendance->feeItems()->where('fee_item_id', $feeItem->id)->delete();
+
+        $attendance->load('feeItems');
+
+        $attendance->update([
+            'total_fee' => $attendance->feeItems->sum(fn($afi) => $afi->amount ?? 0)
+        ]);
     }
 
     public function list(Request $request)
@@ -127,11 +117,64 @@ class AdminListController extends Controller
 
         $reservations = Reservation::with([
             'child',
+            'slot',
             'slot.dateValue',
             'attendance.feeItems.feeItem'
         ])
         ->whereHas('slot.dateValue', fn($q) => $q->where('date', $date))
         ->get();
+
+        $reservations = $reservations
+            ->groupBy('child_id')
+            ->map(function ($group) {
+    
+                $timeRanges = $group->map(function ($r) {
+                    $slotTime = $r->slot->slot_time ?? null;
+                    if (!$slotTime) {
+                        \Log::debug('slot_timeが空', ['reservation_id' => $r->id]);
+                        return null;
+                    }
+
+                 // slot_time は「H:i:s」形式（例：8:00:00）
+                    try {
+                        $start = \Carbon\Carbon::createFromFormat('H:i:s', $slotTime);
+                    } catch (\Exception $e) {
+                        \Log::warning('slot_time形式不正', ['slot_time' => $slotTime]);
+                        return null;
+                    }
+
+                    $end = $start->copy()->addMinutes(30); // 30分スロット
+
+                    return [
+                        'start' => $start->format('H:i'),
+                        'end' => $end->format('H:i'),
+                    ];
+                })->filter()->sortBy('start')->values();
+
+                $merged = [];
+                foreach ($timeRanges as $range) {
+                    if (empty($merged)) {
+                        $merged[] = $range;
+                        continue;
+                    }
+
+                $last = &$merged[count($merged) - 1];
+                // 直前の終了時刻と今回の開始時刻が同じなら結合
+                if ($last['end'] === $range['start']) {
+                    $last['end'] = $range['end'];
+                } else {
+                    $merged[] = $range;
+                }
+            }
+
+            // 代表データを取得
+            $first = $group->first();
+            $first->merged_times = $merged;
+            $first->combined_attendances = $group->pluck('attendance')->filter();
+
+            return $first;
+        })
+        ->values();
 
         $nonmemberReservations = NonmemberReservation::with([
             'attendance.feeItems.feeItem'
@@ -139,24 +182,31 @@ class AdminListController extends Controller
         ->whereHas('dateValue', fn($q) => $q->where('date', $date))
         ->get();
 
+        $individualFees = [];
+
         foreach ($reservations as $reservation) {
             $this->ensureAttendance($reservation);
+            $individualFees[$reservation->id] = $reservation->attendance
+                ? $reservation->attendance->total_fee
+                : 0;
         }
+
         foreach ($nonmemberReservations as $reservation) {
             $this->ensureAttendance($reservation);
+            $individualFees['nonmember_'.$reservation->id] = $reservation->attendance
+                ? $reservation->attendance->total_fee
+                : 0;
         }
 
-        $totalFee = $reservations->sum(fn($r) => $this->calcFee($r->attendance))
-            + $nonmemberReservations->sum(fn($r) => $this->calcFee($r->attendance));
+        $totalFee = $reservations->sum(fn($r) => $r->attendance->total_fee ?? 0)
+            + $nonmemberReservations->sum(fn($r) => $r->attendance->total_fee ?? 0);
 
         $accountedTotal = $reservations->sum(fn($r) =>
-            ($r->attendance && $r->attendance->accounted) ? $this->calcFee($r->attendance) : 0
-        ) + $nonmemberReservations->sum(fn($r) =>
-            ($r->attendance && $r->attendance->accounted) ? $this->calcFee($r->attendance) : 0
-        );
+            ($r->attendance && $r->attendance->accounted) ? $r->attendance->total_fee : 0)
+            + $nonmemberReservations->sum(fn($r) =>
+            ($r->attendance && $r->attendance->accounted) ? $r->attendance->total_fee : 0);
 
-
-        return view('admin.book_list', compact('reservations', 'nonmemberReservations', 'totalFee', 'accountedTotal', 'date'));
+        return view('admin.book_list', compact('reservations', 'nonmemberReservations', 'totalFee', 'accountedTotal', 'individualFees', 'date'));
     }
 
     private function ensureAttendance($reservation)
@@ -191,20 +241,93 @@ class AdminListController extends Controller
         if ($isNonmember) {
             $reservable = NonmemberReservation::findOrFail($id);
             $reservableType = NonmemberReservation::class;
+
+            $attendance = Attendance::updateOrCreate(
+                [
+                    'reservable_id' => $reservable->id,
+                    'reservable_type' => $reservableType,
+                ],
+                [
+                    'actual_start_time' => Carbon::now()->format('H:i'),
+                    'meal_used' => $reservable->meal ? 'yes' : null,
+                    'snack_used' => $reservable->snack ? 'yes' : null,
+                    'total_fee' => 0,
+                ]
+            );
+            $attendance->refresh();
+
+            $this->registerFeeItem($attendance, 'basic', false);
+
         } else {
             $reservable = Reservation::findOrFail($id);
-            $reservableType = Reservation::class;
+            $childId = $reservable->child_id;
+            $date = $reservable->slot->dateValue->date;
+
+            $reservations = Reservation::with('slot.dateValue')
+                ->where('child_id', $childId)
+                ->whereHas('slot.dateValue', fn($q) => $q->where('date', $date))
+                ->get()
+                ->sortBy(fn($r) => $r->slot->slot_time);
+
+                // 連続ブロックに分ける
+            $mergedBlocks = [];
+            $currentBlock = [];
+
+            foreach ($reservations as $r) {
+                $start = Carbon::createFromFormat('H:i:s', $r->slot->slot_time);
+                $end = $start->copy()->addMinutes(30);
+
+                if (empty($currentBlock)) {
+                    $currentBlock[] = ['reservation' => $r, 'start' => $start, 'end' => $end];
+                    continue;
+                }
+
+                $last = end($currentBlock);
+                if ($last['end']->eq($start)) {
+                    $last['end'] = $end;
+                    $currentBlock[] = ['reservation' => $r, 'start' => $start, 'end' => $end];
+                } else {
+                    $mergedBlocks[] = $currentBlock;
+                    $currentBlock = [['reservation' => $r, 'start' => $start, 'end' => $end]];
+                }
+            }
+            if (!empty($currentBlock)) $mergedBlocks[] = $currentBlock;
+
+             // 今クリックされた reservation が属するブロックを取得
+            $targetBlock = collect($mergedBlocks)->first(function ($block) use ($reservable) {
+                return collect($block)->contains(fn($b) => $b['reservation']->id === $reservable->id);
+            });
+     
+            if (!$targetBlock) {
+                return back()->with('error', '対象予約ブロックが見つかりません');
+            }
+
+           // attendance 作成
+            $blockStart = collect($targetBlock)->first()['start'];
+            $blockEnd = collect($targetBlock)->last()['end'];
+
+            $mealUsed = collect($targetBlock)->contains(fn($b) => $b['reservation']->meal ?? false);
+            $snackUsed = collect($targetBlock)->contains(fn($b) => $b['reservation']->snack ?? false);
+
+            $attendance = Attendance::updateOrCreate(
+                [
+                    'reservable_id' => $targetBlock[0]['reservation']->id,
+                    'reservable_type' => Reservation::class,
+                ],
+                [
+                    'actual_start_time' => $blockStart->format('H:i:s'),
+                    'actual_end_time' => $blockEnd->format('H:i:s'),
+                    'meal_used' => $mealUsed ? 'yes' : null,
+                    'snack_used' => $snackUsed ? 'yes' : null,
+                    'total_fee' => 0,
+                ]
+            );
+
+            $attendance->refresh();
+            $this->registerFeeItem($attendance, 'basic', false);
         }
 
-        $attendance = Attendance::firstOrNew([
-            'reservable_id' => $reservable->id,
-            'reservable_type' => $reservableType,
-        ]);
-
-        $attendance->actual_start_time = Carbon::now()->format('H:i');
-        $attendance->save();
-
-        return back();
+        return back()->with('success', '利用を開始しました');
     }
 
     public function end(Request $request, $id)
@@ -214,25 +337,59 @@ class AdminListController extends Controller
         if ($isNonmember) {
             $reservable = NonmemberReservation::findOrFail($id);
             $reservableType = NonmemberReservation::class;
+            $attendance = Attendance::where('reservable_id', $reservable->id)
+                ->where('reservable_type', $reservableType)
+                ->first();
+
+            if (!$attendance || !$attendance->actual_start_time) {
+                return back()->with('error', '利用開始されていません。');
+            }
+
+            $attendance->actual_end_time = Carbon::now()->format('H:i');
+            $attendance->meal_used = $reservable->meal ? 'yes' : null;
+            $attendance->snack_used = $reservable->snack ? 'yes' : null;
+            $attendance->save();
+
+            $this->registerFeeItem($attendance, 'basic', true);
+        
         } else {
             $reservable = Reservation::findOrFail($id);
-            $reservableType = Reservation::class;
+            $childId = $reservable->child_id;
+            $date = $reservable->slot->dateValue->date;
+
+            $attendance = Attendance::where('reservable_type', Reservation::class)
+                ->whereIn('reservable_id', function ($query) use ($childId, $date) {
+                    $query->select('id')
+                        ->from('reservations')
+                        ->where('child_id', $childId)
+                        ->whereHas('slot.dateValue', function ($q) use ($date) {
+                            $q->where('date', $date);
+                        });
+                })
+                ->first();
+
+
+            if (!$attendance || !$attendance->actual_start_time) {
+                return back()->with('error', '利用開始されていません。');
+            }
+
+            $attendance->actual_end_time = Carbon::now()->format('H:i');
+
+            // meal/snackも更新
+            $reservations = Reservation::where('child_id', $childId)
+                ->whereHas('slot.dateValue', fn($q) => $q->where('date', $date))
+                ->get();
+
+            $attendance->meal_used = $reservations->contains(fn($r) => $r->meal ?? false) ? 'yes' : null;
+            $attendance->snack_used = $reservations->contains(fn($r) => $r->snack ?? false) ? 'yes' : null;
+
+            $attendance->save();
+
+            $attendance->refresh();
+            $this->registerFeeItem($attendance, 'basic', true);
         }
 
-        $attendance = Attendance::where('reservable_id', $reservable->id)
-            ->where('reservable_type', $reservableType)
-            ->first();
-
-        if (!$attendance || !$attendance->actual_start_time) {
-            return back()->with('error', '利用開始されていません。');
-        }
-
-        $attendance->actual_end_time = Carbon::now()->format('H:i');
-        $attendance->save();
-
-        $this->registerFeeItem($attendance, 'basic');
-
-        return back();
+        return back()->with('success', '利用終了しました');
     }
 
     public function updateStartTime(Request $request, $id)
@@ -261,16 +418,17 @@ class AdminListController extends Controller
     {
         $isNonmember = $request->input('nonmember') === '1';
 
-        if ($isNonmember) {
-            $reservable = NonmemberReservation::findOrFail($id);
-        } else {
-            $reservable = Reservation::findOrFail($id);
-        }
+        $reservable = $isNonmember 
+            ? NonmemberReservation::findOrFail($id)
+            : Reservation::findOrFail($id);
 
         $attendance = $reservable->attendance;
         if ($attendance) {
             $attendance->actual_start_time = null;
             $attendance->save();
+
+            $this->removeFeeItem($attendance, '給食');
+            $this->removeFeeItem($attendance, 'おやつ');
         }
 
         return back();
@@ -295,7 +453,7 @@ class AdminListController extends Controller
         $attendance->actual_end_time = $request->actual_end_time;
         $attendance->save();
 
-        $this->registerFeeItem($attendance, 'basic');
+        $this->registerFeeItem($attendance, 'basic', true);
 
         return back();
     }
@@ -304,19 +462,19 @@ class AdminListController extends Controller
     {
         $isNonmember = $request->input('nonmember') === '1';
 
-        if ($isNonmember) {
-            $reservable = NonmemberReservation::findOrFail($id);
-        } else {
-            $reservable = Reservation::findOrFail($id);
-        }
+        $reservable = $isNonmember 
+            ? NonmemberReservation::findOrFail($id)
+            : Reservation::findOrFail($id);
+
 
         $attendance = $reservable->attendance;
         if ($attendance) {
             $attendance->actual_end_time = null;
             $attendance->save();
-        }
 
-        $this->removeFeeItem($attendance, 'basic');
+            $this->removeFeeItem($attendance, '未満児保育');
+            $this->removeFeeItem($attendance, '以上児保育');
+        }
 
         return back();
     }
@@ -373,7 +531,7 @@ class AdminListController extends Controller
         if ($attendance) {
             $attendance->meal_used = null;
             $attendance->save();
-            $this->removeFeeItem($attendance, 'meal');
+            $this->removeFeeItem($attendance, '給食');
         }
 
         $reservable->meal = false;
@@ -439,7 +597,7 @@ class AdminListController extends Controller
         if ($attendance) {
             $attendance->snack_used = null;
             $attendance->save();
-            $this->removeFeeItem($attendance, 'snack');
+            $this->removeFeeItem($attendance, 'おやつ');
         }
 
         $reservable->snack = false;

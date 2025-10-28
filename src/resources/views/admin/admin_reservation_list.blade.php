@@ -32,11 +32,26 @@
                 <td>{{ $r['child_name'] }}</td>
                 <td>{{ $r['time'] }}</td>
                 <td>
-                    <form action="{{ route('admin.reservation.cancel', $r['id']) }}" method="POST">
-                    @csrf
-                    @method('DELETE')
+                    @if($r['is_member'])
+                    <!-- 会員キャンセルボタン -->
+                    <form action="{{ route('admin.reservation.cancel') }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <input type="hidden" name="child_id" value="{{ $r['child_id'] }}">
+                        <input type="hidden" name="date" value="{{ $date }}">
                         <button type="submit" class="btn btn-danger btn-sm">キャンセル</button>
                     </form>
+                @else
+                    <!-- 非会員キャンセルボタン -->
+                    <form action="{{ route('admin.reservation.cancel') }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <input type="hidden" name="date" value="{{ $date }}">
+                        <input type="hidden" name="start_time" value="{{ $r['start_time'] }}">
+                        <input type="hidden" name="end_time" value="{{ $r['end_time'] }}">
+                        <button type="submit" class="btn btn-danger btn-sm">キャンセル</button>
+                    </form>
+                    @endif
                 </td>
             </tr>
         @empty
