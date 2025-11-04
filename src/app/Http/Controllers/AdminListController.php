@@ -43,10 +43,18 @@ class AdminListController extends Controller
             } else {
                 $child = $attendance->reservable->child ?? null;
                 if ($child && $child->birthday) {
-                    $age = \Carbon\Carbon::parse($child->birthday)->age;
-                    $category = $age < 3 ? '未満児保育' : '以上児保育';
+                    $birthday = \Carbon\Carbon::parse($child->birthday);
+                    $attendanceDate = \Carbon\Carbon::parse($attendance->date ?? now());
+                    $year = $attendanceDate->year;
+                    if ($attendanceDate->month < 4) {
+                        $year--;
+                    }
+                    $referenceDate = \Carbon\Carbon::create($year, 4, 2);
+                    $ageAtReference = $birthday->diffInYears($referenceDate);
+
+                    $category = $ageAtReference < 3 ? '未満児保育' : '以上児保育';
                 } else {
-                    $category = '以上児保育';
+                    $category = null;
                 }
             }
 
@@ -284,7 +292,6 @@ class AdminListController extends Controller
 
                 $last = end($currentBlock);
                 if ($last['end']->eq($start)) {
-                    $last['end'] = $end;
                     $currentBlock[] = ['reservation' => $r, 'start' => $start, 'end' => $end];
                 } else {
                     $mergedBlocks[] = $currentBlock;
@@ -302,10 +309,6 @@ class AdminListController extends Controller
                 return back()->with('error', '対象予約ブロックが見つかりません');
             }
 
-           // attendance 作成
-            $blockStart = collect($targetBlock)->first()['start'];
-            $blockEnd = collect($targetBlock)->last()['end'];
-
             $mealUsed = collect($targetBlock)->contains(fn($b) => $b['reservation']->meal ?? false);
             $snackUsed = collect($targetBlock)->contains(fn($b) => $b['reservation']->snack ?? false);
 
@@ -315,8 +318,8 @@ class AdminListController extends Controller
                     'reservable_type' => Reservation::class,
                 ],
                 [
-                    'actual_start_time' => $blockStart->format('H:i:s'),
-                    'actual_end_time' => $blockEnd->format('H:i:s'),
+                    'actual_start_time' => Carbon::now()->format('H:i:s'),
+                    'actual_end_time' => null,
                     'meal_used' => $mealUsed ? 'yes' : null,
                     'snack_used' => $snackUsed ? 'yes' : null,
                     'total_fee' => 0,
@@ -354,20 +357,19 @@ class AdminListController extends Controller
         
         } else {
             $reservable = Reservation::findOrFail($id);
+            $reservableType = Reservation::class;
             $childId = $reservable->child_id;
             $date = $reservable->slot->dateValue->date;
 
-            $attendance = Attendance::where('reservable_type', Reservation::class)
-                ->whereIn('reservable_id', function ($query) use ($childId, $date) {
-                    $query->select('id')
-                        ->from('reservations')
-                        ->where('child_id', $childId)
-                        ->whereHas('slot.dateValue', function ($q) use ($date) {
-                            $q->where('date', $date);
-                        });
+            $reservationIds = Reservation::where('child_id', $childId)
+                ->whereHas('slot.dateValue', function ($q) use ($date) {
+                    $q->where('date', $date);
                 })
-                ->first();
+                ->pluck('id');
 
+            $attendance = Attendance::where('reservable_type', Reservation::class)
+                ->whereIn('reservable_id', $reservationIds)
+                ->first();
 
             if (!$attendance || !$attendance->actual_start_time) {
                 return back()->with('error', '利用開始されていません。');
@@ -487,8 +489,8 @@ class AdminListController extends Controller
             $reservable = NonmemberReservation::with('dateValue')->findOrFail($id);
             $date = optional($reservable->dateValue)->date;
         } else {
-            $reservable = Reservation::with('reservationSlot.dateValue')->findOrFail($id);
-            $date = optional($reservable->reservationSlot->dateValue)->date;
+            $reservable = Reservation::with('slot.dateValue')->findOrFail($id);
+            $date = optional($reservable->slot->dateValue)->date;
         }
 
         $attendance = $reservable->attendance ?? Attendance::create([
@@ -523,8 +525,8 @@ class AdminListController extends Controller
             $reservable = NonmemberReservation::with('dateValue')->findOrFail($id);
             $date = optional($reservable->dateValue)->date;
         } else {
-            $reservable = Reservation::with('reservationSlot.dateValue')->findOrFail($id);
-            $date = optional($reservable->reservationSlot->dateValue)->date;
+            $reservable = Reservation::with('slot.dateValue')->findOrFail($id);
+            $date = optional($reservable->slot->dateValue)->date;
         }
 
         $attendance = $reservable->attendance;
@@ -554,8 +556,8 @@ class AdminListController extends Controller
             $reservable = NonmemberReservation::with('dateValue')->findOrFail($id);
             $date = optional($reservable->dateValue)->date;
         } else {
-            $reservable = Reservation::with('reservationSlot.dateValue')->findOrFail($id);
-            $date = optional($reservable->reservationSlot->dateValue)->date;
+            $reservable = Reservation::with('slot.dateValue')->findOrFail($id);
+            $date = optional($reservable->slot->dateValue)->date;
         }
 
         $attendance = $reservable->attendance ?? Attendance::create([
@@ -589,8 +591,8 @@ class AdminListController extends Controller
             $reservable = NonmemberReservation::with('dateValue')->findOrFail($id);
             $date = optional($reservable->dateValue)->date;
         } else {
-            $reservable = Reservation::with('reservationSlot.dateValue')->findOrFail($id);
-            $date = optional($reservable->reservationSlot->dateValue)->date;
+            $reservable = Reservation::with('slot.dateValue')->findOrFail($id);
+            $date = optional($reservable->slot->dateValue)->date;
         }
 
         $attendance = $reservable->attendance;
@@ -619,6 +621,25 @@ class AdminListController extends Controller
             $attendance->update(['accounted' => $request->boolean('accounted')]);
         }
         return back();
+    }
+
+    public function detail($id, Request $request)
+    {
+        $isNonmember = $request->input('isNonmember');
+        $date = $request->input('date');
+
+        if ($isNonmember) {
+            $reservation = NonmemberReservation::findOrFail($id);
+        } else {
+            $reservation = Reservation::with([
+                'child',
+                'child.user',
+                'child.user.contacts',
+                'child.siblings',
+            ])->findOrFail($id);
+        }
+
+        return view('admin.book_detail', compact('reservation', 'isNonmember', 'date'));
     }
 
     //

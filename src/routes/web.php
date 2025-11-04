@@ -8,6 +8,7 @@ use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AdminFeeController;
 use App\Http\Controllers\AdminScheduleController;
 use App\Http\Controllers\AdminReservationController;
+use App\Http\Controllers\AdminSummaryController;
 
 
 
@@ -56,6 +57,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::delete('/attendance/snack/{id}', [AdminListController::class, 'deleteSnack'])->name('attendance.snack.delete');
 
     Route::post('/admin/book-list/accounted', [AdminListController::class, 'updateAccounted'])->name('admin.book_list.accounted');
+    Route::get('/admin/book-detail/{id}', [AdminListController::class, 'detail'])
+        ->name('admin.book_detail');
 
     Route::get('/admin/schedule', [AdminScheduleController::class, 'index'])->name('admin.schedule');
     Route::get('/admin/schedule/{date}', [AdminScheduleController::class, 'show'])->name('admin.schedule.show');
@@ -88,7 +91,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::post('/fees', [AdminFeeController::class, 'store'])->name('admin.fee.store');
     Route::put('fees/update/{id}', [AdminFeeController::class, 'update'])->name('admin.fee.update');
     Route::delete('fees/destroy/{id}', [AdminFeeController::class, 'destroy'])->name('admin.fee.destroy');
-    
+    Route::get('/summary', [AdminSummaryController::class, 'index'])->name('admin.summary');
+   
 });
 
 

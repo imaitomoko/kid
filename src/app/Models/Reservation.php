@@ -28,4 +28,17 @@ class Reservation extends Model
     {
         return $this->morphOne(Attendance::class, 'reservable');
     }
+
+    public function dateValue()
+    {
+    // hasOneThroughでreservation_slot経由でdate_valuesを取得
+        return $this->hasOneThrough(
+            \App\Models\DateValue::class, // 最終的に取得するモデル
+            \App\Models\ReservationSlot::class, // 中間モデル
+            'id',              // ReservationSlotのPK
+            'id',              // DateValueのPK
+            'reservation_slot_id', // ReservationのFK
+            'date_value_id'        // ReservationSlotのFK
+        );
+    }
 }

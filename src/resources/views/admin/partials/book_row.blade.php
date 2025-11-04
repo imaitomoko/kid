@@ -4,7 +4,11 @@
 @endphp
 
 <tr>
-    <td>{{ $isNonmember ? $reservation->child_name : $reservation->child->child_name }}</td>
+    <td>
+        <a href="{{ route('admin.book_detail', ['id' => $reservation->id, 'isNonmember' => $isNonmember ? 1 : 0, 'date' => $date->format('Y-m-d')]) }}">
+            {{ $isNonmember ? $reservation->child_name : $reservation->child->child_name }}
+        </a>
+    </td>
 
     <td>
         @if($isNonmember)
@@ -87,7 +91,7 @@
             <form action="{{ route('attendance.meal', ['id' => $reservation->id]) }}" method="POST">
                 @csrf
                 <input type="hidden" name="nonmember" value="{{ $isNonmember ? '1' : '0' }}">
-                <button type="submit" class="btn btn-primary btn-sm">給食利用</button>                
+                <button type="submit" class="btn btn-primary btn-sm">給食利用</button>
             </form>
         @endif
 

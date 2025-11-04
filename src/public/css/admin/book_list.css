@@ -33,7 +33,6 @@ h2 {
     color: #666;
 }
 
-
 /* テーブル全体 */
 .table {
     width: 100%;
@@ -45,9 +44,10 @@ h2 {
 }
 
 /* テーブルヘッダー */
-.table thead {
-    background: #4f6ef7;
+.table thead th {
+    background: #007bff;
     color: #fff;
+    font-weight: bold;
 }
 
 .table th, .table td {
@@ -55,32 +55,55 @@ h2 {
     text-align: center;
     border-bottom: 1px solid #ddd;
     font-size: 15px;
+    vertical-align: middle;
 }
 
-/* 偶数行に背景色 */
-.table tbody tr:nth-child(even) {
-    background: #f5f8ff;
+.table tbody tr:nth-child(odd) {
+    background: #ffffff;
+}
+
+.table tbody tr:nth-child(even) td{
+    background: #f5f8ff !important;
 }
 
 /* ボタン共通 */
 .btn {
     display: inline-block;
-    padding: 6px 12px;
+    padding: 4px 9px;
     margin: 2px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-size: 14px;
-    color: #fff;
     transition: background 0.2s;
 }
 
+.btn-primary {
+    background-color: #fff;
+    border: 1px solid #007bff;
+    color: #007bff;
+}
+
 /* ボタン色別 */
-.btn-success { background: #28a745; }
-.btn-danger { background: #dc3545; }
+.btn-success { 
+    background-color: #28a745;
+    border: 1px solid #28a745;
+    color: #fff;
+}
+
+.btn-danger { 
+    background-color: #fff;
+    border: 1px solid #dc3545;
+    color: #dc3545;
+}
 
 .btn:hover {
     opacity: 0.85;
+}
+
+.btn i {
+    font-size: 15px;
+    vertical-align: middle;
 }
 
 input[type="checkbox"] {
