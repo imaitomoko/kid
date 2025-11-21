@@ -1,0 +1,101 @@
+.content {
+    margin: 150px auto;
+    max-width: 480px;
+}
+
+.heading {
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+h2 {
+    display: inline-block;
+    border-bottom: 2px solid #333;
+    padding-bottom: 4px;
+}
+
+.mb-3 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+before {
+    font-size: 14px;
+}
+
+.month {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.custom_table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    font-family: 'Noto Sans JP', sans-serif;
+    background-color: #f9fff9;
+    border: 1px solid #d0e6d0;
+}
+
+.custom_table th,
+.custom_table td {
+    padding: 6px 4px;
+    text-align: center;
+    word-break: keep-all;
+    border: 1px solid #d0e6d0;
+}
+
+.custom_table th {
+    background-color: #c8f0c8;
+    font-weight: bold;
+    color: #1f4d1f;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.custom_table tbody tr:nth-child(odd) {
+    background-color: #eaf7ea;
+}
+
+.custom_table tbody tr:nth-child(even) {
+    background-color: #f3fff3;
+}
+
+.custom_table tr {
+    height: 42px;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.total_fee {
+    text-align: right;
+    margin: 30px 10px;
+}
+
+p {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.back__button {
+    text-align: center;
+    width: 100px;
+    margin: 60px auto;
+    padding: 5px;
+    height: 35px;
+    border: none;
+    border-radius: 3px;
+    background: #808080;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.back {
+    color: #fff;
+    text-decoration: none;
+}

@@ -1,10 +1,10 @@
 .content {
-    margin: 40px auto;
-    max-width: 760px;
+    margin: 150px auto;
+    max-width: 600px;
 }
 
 .heading {
-    margin-bottom: 40px;
+    margin-bottom: 60px;
     text-align: center;
 }
 
@@ -31,4 +31,22 @@ h2 {
     border-radius: 6px;
     background-color: transparent;
     text-align: center;
+}
+
+.back__button {
+    text-align: center;
+    width: 100px;
+    margin: 60px auto;
+    padding: 5px;
+    height: 35px;
+    border: none;
+    border-radius: 3px;
+    background: #808080;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.back {
+    color: #fff;
+    text-decoration: none;
 }

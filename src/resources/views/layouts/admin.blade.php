@@ -15,7 +15,7 @@
     @yield('css')
 </head>
 
-<body>
+<body class="admin-body">
     <header class="header">
         <div class="header__inner">
             <a class="header__logo" href="{{ route('admin') }}">

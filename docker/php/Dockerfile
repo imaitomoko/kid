@@ -10,4 +10,9 @@ RUN curl -sS https://getcomposer.org/installer | php \
   && mv composer.phar /usr/local/bin/composer \
   && composer self-update
 
+RUN apt-get update && apt-get install -y \
+    fonts-ipafont \
+    fontconfig \
+    && fc-cache -fv
+
 WORKDIR /var/www

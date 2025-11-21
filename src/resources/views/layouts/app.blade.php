@@ -15,10 +15,10 @@
     @yield('css')
 </head>
 
-<body>
+<body class="app-body">
     <header class="header">
         <div class="header__inner">
-            <a class="header__logo" href="/">
+            <a class="header__logo" href="{{ route('user.dashboard') }}">
                 <img src="{{ asset('images/turtle.png') }}" alt="Turtle" class="logo-turtle">
                 <div class="logo-text-group">
                     <img src="{{ asset('images/logo.png') }}" alt="Logo" class="logo-image">
@@ -26,7 +26,7 @@
                 </div>
             </a>
             @auth
-            <form action="/logout" method="POST">
+            <form action="{{ route('logout') }}" method="POST">
                 @csrf
                 <button class="header-nav__button" type="submit">ログアウト</button>
             </form>

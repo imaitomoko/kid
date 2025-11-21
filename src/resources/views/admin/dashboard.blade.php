@@ -15,7 +15,7 @@
             <a href="{{ route('admin.reservation') }} " class="menu-button main-btn">予約管理</a>
             <a href="{{ route('admin.schedule') }}" class="menu-button main-btn">スケジュール管理</a>
             <a href="{{ route('admin.summary') }} " class="menu-button main-btn">集計</a>
-            <a href=" " class="menu-button main-btn">履歴管理</a>
+            <a href="{{ route('admin.history') }}" class="menu-button main-btn">履歴管理</a>
         </div>
         <div class="sub-menu">
             <a href="{{ route('admin.user') }}" class="menu-button sub-btn">ユーザー管理</a>

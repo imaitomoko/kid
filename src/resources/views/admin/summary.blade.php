@@ -30,10 +30,6 @@
         @php
             $totalUnder4 = 0;
             $totalOver4 = 0;
-            $totalCare = 0;
-            $totalMeal = 0;
-            $totalSnack = 0;
-            $totalAll = 0;
         @endphp
         <tbody>
             @foreach($summary as $date => $s)
@@ -72,10 +68,11 @@
     </div>
 
     <div class="pdf">
-        <a class="btn-pdf" href="">PDF印刷</a>
+        <a class="btn-pdf" href="{{ url('admin/summary/pdf') }}?month={{ $month->toDateString() }}">PDF印刷</a>
     </div>
 
     <div class="back__button">
-        <a class="back" href="{{ route('admin.user') }}">back</a>
+        <a class="back" href="{{ route('admin') }}">back</a>
     </div>
 </div>
+@endsection

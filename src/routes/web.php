@@ -9,8 +9,8 @@ use App\Http\Controllers\AdminFeeController;
 use App\Http\Controllers\AdminScheduleController;
 use App\Http\Controllers\AdminReservationController;
 use App\Http\Controllers\AdminSummaryController;
-
-
+use App\Http\Controllers\AdminHistoryController;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 
 
@@ -92,7 +92,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::put('fees/update/{id}', [AdminFeeController::class, 'update'])->name('admin.fee.update');
     Route::delete('fees/destroy/{id}', [AdminFeeController::class, 'destroy'])->name('admin.fee.destroy');
     Route::get('/summary', [AdminSummaryController::class, 'index'])->name('admin.summary');
-   
+
+    Route::get('/history', [AdminHistoryController::class, 'history'])->name('admin.history');
+    Route::get('/child-search', [AdminHistoryController::class, 'childSearch']);
+
+
 });
 
 
@@ -101,9 +105,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
   //  Route::get('/teacher/dashboard', [TeacherController::class, 'index']);
 //});
 
-// 一般ユーザー
 Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/dashboard', [MypageController::class, 'index'])->name('user.dashboard');
+    Route::get('/profile', [MypageController::class, 'create'])->name('user.profile');
+    Route::post('/profile/update', [MypageController::class, 'update'])->name('user.profile.update');
+    Route::get('/mypage', [MypageController::class, 'mypage'])->name('user.mypage');
+    Route::get('/history/{month?}', [MypageController::class, 'usageHistory'])->name('user.history');
     
 });
 

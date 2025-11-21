@@ -16,6 +16,11 @@ class Child extends Model
         'gender',
     ];
 
+    protected $casts = [
+        'birthday' => 'date',
+    ];
+
+
     public function user()
     {
         return $this->belongsTo(User::class);
