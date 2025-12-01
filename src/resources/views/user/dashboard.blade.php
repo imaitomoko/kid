@@ -22,7 +22,7 @@
             <button class="btn btn-primary" disabled>予約する</button>
             <a href="{{ route('user.profile') }}" class="btn btn-secondary">ユーザー情報を登録する</a>
         @else
-            <a href="" class="btn btn-primary">予約する</a>
+            <a href="{{ route('user.reservation') }}" class="btn btn-primary">予約する</a>
         @endif
     </div>
     @if(session('success'))

@@ -1,0 +1,204 @@
+.content {
+    margin: 80px auto;
+    max-width: 760px;
+    padding-top: 100px;
+}
+
+.heading {
+    text-align: center;
+    position: fixed;
+    top: 100px;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    z-index: 1100;
+}
+
+h2 {
+    display: inline-block;
+    border-bottom: 2px solid #4f4c4c;
+    padding-bottom: 4px;
+    color: #4f4c4c;
+}
+
+.custom-table {
+    border-collapse: collapse;
+    width: 100%;
+    text-align: center;
+}
+
+.custom-table th {
+    background-color: #2e7d32;
+    color: #fff;
+    padding: 10px;
+}
+
+.custom-table td {
+    padding: 8px;
+    color: #444;
+}
+
+.custom-table tbody tr:nth-child(odd) {
+    background-color: #fff;
+}
+
+.custom-table tbody tr:nth-child(even) {
+    background-color: #edf8ee;
+}
+
+.custom-table,
+.custom-table th,
+.custom-table td {
+    border: 1px solid #dee2e6;
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.form-check-input {
+    margin-right: 10px;
+}
+
+.form-wrapper {
+    width: 100%;
+    max-width: 1000px;
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.form-check-inline {
+    display: flex;
+    align-items: center;
+    margin: 0 50px;
+}
+
+.form-select-group {
+    margin: 0 50px;
+}
+
+.form-check-label {
+    font-weight: bold;
+}
+
+.form-label {
+    font-weight: bold;
+
+}
+
+.form-wrapper .form-check-group,
+.form-wrapper .form-select-group {
+    display: flex;
+    justify-content: center;
+    /* 中央揃え */
+    align-items: center;
+    gap: 16px;
+    /* 内部の要素間の余白 */
+}
+
+.select-equal {
+    width: 140px;
+}
+
+.note {
+    width: 100%;
+}
+
+.back__button {
+    text-align: center;
+    width: 100px;
+    margin: 60px auto;
+    padding: 5px;
+    height: 35px;
+    border: none;
+    border-radius: 3px;
+    background: #808080;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.back {
+    color: #fff;
+    text-decoration: none;
+}
+
+@media (max-width: 480px) {
+
+    /* 上部余白を縮小してスマホ画面に収める */
+    .content {
+        margin: 40px auto;
+        padding-top: 60px;
+        max-width: 100%;
+    }
+
+    /* 固定ヘッダの高さ調整 */
+    .heading {
+        top: 60px;
+        padding: 8px 0;
+    }
+
+    h2 {
+        font-size: 18px;
+    }
+
+    /* テーブルは横スクロール可能にする */
+    .custom-table {
+        border-collapse: collapse;
+        width: 90%;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .custom-table th,
+    .custom-table td {
+        padding: 6px;
+    }
+
+    /* フォームの各要素を縦並びに変更 */
+    .form-wrapper {
+        flex-direction: column;
+        gap: 12px;
+        width: 100%;
+        padding: 0 10px;
+    }
+
+    .form-wrapper .form-check-group,
+    .form-check-inline {
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-select-group {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .form-select-type {
+        justify-content: center;
+        width: 100%;
+    }
+
+    .form-label,
+    .form-select {
+        font-size: 14px;
+    }
+
+    .select-equal {
+        width: 140px;
+    }
+
+    .form-check-input {
+        margin-right: 6px;
+    }
+
+    .note {
+        font-size: 13px;
+    }
+}

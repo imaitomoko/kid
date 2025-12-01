@@ -10,6 +10,7 @@ use App\Http\Controllers\AdminScheduleController;
 use App\Http\Controllers\AdminReservationController;
 use App\Http\Controllers\AdminSummaryController;
 use App\Http\Controllers\AdminHistoryController;
+use App\Http\Controllers\ReservationController;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 
@@ -111,6 +112,10 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::post('/profile/update', [MypageController::class, 'update'])->name('user.profile.update');
     Route::get('/mypage', [MypageController::class, 'mypage'])->name('user.mypage');
     Route::get('/history/{month?}', [MypageController::class, 'usageHistory'])->name('user.history');
-    
+    Route::get('/reservation', [ReservationController::class, 'index'])->name('user.reservation');
+    Route::get('/reservation/list/{date}', [ReservationController::class, 'show'])->name('user.reservation.list');
+    Route::post('/reservation/confirm', [ReservationController::class, 'confirm'])->name('user.reservation.confirm');
+    Route::post('/reservation/store', [ReservationController::class, 'store'])->name('user.reservation.store');
+
 });
 
