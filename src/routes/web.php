@@ -117,5 +117,8 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::post('/reservation/confirm', [ReservationController::class, 'confirm'])->name('user.reservation.confirm');
     Route::post('/reservation/store', [ReservationController::class, 'store'])->name('user.reservation.store');
 
+    Route::get('/reservation/history', [ReservationController::class, 'history'])->name('user.reservation.history');
+    Route::delete('/reservation/cancel', [ReservationController::class, 'destroy'])->name('user.reservation.cancel');
+
 });
 

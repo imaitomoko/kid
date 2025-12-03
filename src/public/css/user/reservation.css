@@ -20,6 +20,14 @@ h2 {
     padding-bottom: 4px;
     color: #4f4c4c;
 }
+.alert.alert-success {
+    background-color: transparent !important;
+    border: none !important;
+    color: blue !important;
+    padding: 0;
+    text-align: center;
+    margin-top: 30px;
+}
 
 .month-navigation {
     margin-bottom: 20px;
@@ -116,5 +124,13 @@ h2 {
     .btn-sm {
         padding: 2px 4px;
         font-size: 10px;
+    }
+
+    .alert.alert-success {
+        background-color: transparent !important;
+        border: none !important;
+        color: blue !important;
+        width: 80%;
+        margin-top: 30px;
     }
 }

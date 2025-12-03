@@ -33,8 +33,7 @@
 
     <div class="button">
         <div class="confirm">
-            <a href="">予約確認</a>
-
+            <a href="{{ route('user.reservation.history') }}">予約確認</a>
         </div>
         <div class="mypage">
             <a href="{{ route('user.mypage') }}">マイページ</a>

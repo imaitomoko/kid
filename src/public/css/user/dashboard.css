@@ -15,8 +15,22 @@ h2 {
 }
 
 .alert.alert-warning {
-    color: rgb(82, 80, 80);
+    background-color: transparent !important;
+    border: none !important;
+    color: red !important;
     width: 80%;
+    padding: 0;
+    text-align: center;
+}
+
+.alert alert-success {
+    background-color: transparent !important;
+    border: none !important;
+    color: blue !important;
+    width: 80%;
+    padding: 0;
+    text-align: center;
+    margin: 20px;
 }
 
 .reservation {
@@ -94,3 +108,16 @@ h2 {
 .mypage {
     margin-left: 10px;
 }
+
+@media (max-width: 480px) {
+    .alert.alert-warning {
+        background-color: transparent !important;
+        border: none !important;
+        color: red !important;
+        width: 80%;
+        padding: 0;
+        text-align: left;
+    }
+
+}
+
