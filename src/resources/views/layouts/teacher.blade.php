@@ -7,8 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KID</title>
     <link rel="stylesheet" href="{{ asset('css/sanitize.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/common.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/teacher.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
 
@@ -18,14 +19,16 @@
 <body class="teacher-body">
     <header class="header">
         <div class="header__inner">
-            <a class="header__logo" href="/">
+            <a class="header__logo" href="{{ route('teacher.dashboard') }}">
             とうばんの森 KID スタッフ
             </a>
             @auth
-            <form action="/logout" method="POST">
-                @csrf
-                <button class="header-nav__button" type="submit">ログアウト</button>
-            </form>
+                @if(auth()->user()->role === 'teacher')
+                    <form action="/logout" method="POST">
+                        @csrf
+                        <button class="header-nav__button" type="submit">ログアウト</button>
+                    </form>
+                @endif
             @endauth
         </div>
     </header>

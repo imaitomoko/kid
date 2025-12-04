@@ -1,0 +1,56 @@
+.content {
+    margin: 80px auto;
+    max-width: 760px;
+}
+
+.heading {
+    text-align: center;
+    position: fixed;
+    top: 80px;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    z-index: 1100;
+    margin-top: 50px;
+}
+
+h2 {
+    display: inline-block;
+    border-bottom: 2px solid #333;
+    padding-bottom: 4px;
+}
+
+.main-menu {
+    display: flex;
+    /* Flexbox */
+    justify-content: center;
+    /* 横方向中央 */
+    align-items: flex-start;
+    /* 縦方向は上寄せ */
+    margin-top: 400px;
+    /* ページ上から下げる */
+    height: 100px;
+    /* 必要に応じて調整 */
+}
+/* 共通ボタン */
+.menu-button {
+    width: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px 20px;
+    font-weight: bold;
+    font-size: 20px;
+    border-radius: 10px;
+    color: #fff;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.main-btn {
+    background-color: #3B82F6;
+}
+
+.main-btn:hover {
+    background-color: #2563EB;
+}

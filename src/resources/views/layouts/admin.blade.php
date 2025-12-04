@@ -22,10 +22,12 @@
             とうばんの森 KID 管理用
             </a>
             @auth
-            <form action="/logout" method="POST">
-                @csrf
-                <button class="header-nav__button" type="submit">ログアウト</button>
-            </form>
+                @if(auth()->user()->role === 'admin')
+                    <form action="/logout" method="POST">
+                        @csrf
+                        <button class="header-nav__button" type="submit">ログアウト</button>
+                    </form>
+                @endif
             @endauth
         </div>
     </header>

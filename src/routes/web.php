@@ -11,6 +11,7 @@ use App\Http\Controllers\AdminReservationController;
 use App\Http\Controllers\AdminSummaryController;
 use App\Http\Controllers\AdminHistoryController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\TeacherController;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 
@@ -102,9 +103,24 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 
 
 // 先生専用ルート
-//Route::middleware(['auth', 'role:teacher'])->group(function () {
-  //  Route::get('/teacher/dashboard', [TeacherController::class, 'index']);
-//});
+Route::middleware(['auth', 'role:teacher'])->prefix('teacher')->name('teacher.')->group(function () {
+    Route::get('/', [TeacherController::class, 'index'])->name('dashboard');
+    Route::get('/reservation/list', [TeacherController::class, 'show'])->name('reservation.list');
+    Route::post('/attendance/start/{id}', [TeacherController::class, 'start'])->name('attendance.start');
+    Route::post('/attendance/end/{id}', [TeacherController::class, 'end'])->name('attendance.end');
+    Route::put('/attendance/{id}/update-start', [TeacherController::class, 'updateStartTime'])->name('attendance.updateStartTime');
+    Route::delete('/attendance/{id}/delete-start', [TeacherController::class, 'deleteStartTime'])->name('attendance.deleteStartTime');
+    Route::put('/attendance/{id}/update-end', [TeacherController::class, 'updateEndTime'])->name('attendance.updateEndTime');
+    Route::delete('/attendance/{id}/delete-end', [TeacherController::class, 'deleteEndTime'])->name('attendance.deleteEndTime');
+
+    Route::post('/attendance/meal/{id}', [TeacherController::class, 'meal'])->name('attendance.meal');
+    Route::post('/attendance/snack/{id}', [TeacherController::class, 'snack'])->name('attendance.snack');
+    Route::delete('/attendance/meal/{id}', [TeacherController::class, 'deleteMeal'])->name('attendance.meal.delete');
+    Route::delete('/attendance/snack/{id}', [TeacherController::class, 'deleteSnack'])->name('attendance.snack.delete');
+
+    Route::get('/book-detail/{id}', [TeacherController::class, 'detail'])->name('attendance.detail');
+
+});
 
 Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/dashboard', [MypageController::class, 'index'])->name('user.dashboard');
