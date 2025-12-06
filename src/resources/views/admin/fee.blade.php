@@ -39,6 +39,7 @@
                             <option value="以上児保育">以上児保育</option>
                             <option value="給食">給食</option>
                             <option value="おやつ">おやつ</option>
+                            <option value="誰でも通園">誰でも通園</option>
                         </select>
                         @error('user_name') 
                             <div class="text-danger"> {{ $message}}</div>
@@ -118,6 +119,7 @@
                                         <option value="以上児保育" {{ $item->category == '以上児保育' ? 'selected' : '' }}>以上児保育</option>
                                         <option value="給食" {{ $item->category == '給食' ? 'selected' : '' }}>給食</option>
                                         <option value="おやつ" {{ $item->category == 'おやつ' ? 'selected' : '' }}>おやつ</option>
+                                        <option value="誰でも通園" {{ $item->category == '誰でも通園' ? 'selected' : '' }}>誰でも通園</option>
                                     </select>
                                 </td>
                                 <td>

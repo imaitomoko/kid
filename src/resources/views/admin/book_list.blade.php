@@ -44,7 +44,7 @@
     </div>
 
     <div class="back__button">
-        <a class="back" href="{{ route('admin.user') }}">back</a>
+        <a class="back" href="{{ route('admin') }}">back</a>
     </div>
 </div>
 @endsection

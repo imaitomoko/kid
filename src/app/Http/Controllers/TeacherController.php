@@ -28,8 +28,14 @@ class TeacherController extends Controller
 
             // 保育料のカテゴリ決定
             if ($attendance->reservable_type === \App\Models\NonmemberReservation::class) {
-                $isUnder3 = (bool)$attendance->reservable->is_under_3;
-                $category = $isUnder3 ? '未満児保育' : '以上児保育';
+                $type = (int)$attendance->reservable->is_under_3;
+
+                if ($type === 2) {
+                    $category = '誰でも通園';
+                } else {
+                    $category = $type === 1 ? '未満児保育' : '以上児保育';
+                }
+
             } else {
                 $child = $attendance->reservable->child ?? null;
                 if ($child && $child->birthday) {
@@ -48,15 +54,17 @@ class TeacherController extends Controller
                 }
             }
 
-            $basicFeeItem = FeeItem::where('category', $category)->first();
-            if ($basicFeeItem) {
-                AttendanceFeeItem::updateOrCreate(
-                    [
-                        'attendance_id' => $attendance->id,
-                        'fee_item_id'   => $basicFeeItem->id,
-                    ],
-                    ['amount' => $basicFeeItem->amount * $hours]
-                );
+            if ($category) {
+                $basicFeeItem = FeeItem::where('category', $category)->first();
+                if ($basicFeeItem) {
+                    AttendanceFeeItem::updateOrCreate(
+                        [
+                            'attendance_id' => $attendance->id,
+                            'fee_item_id'   => $basicFeeItem->id,
+                        ],
+                        ['amount' => $basicFeeItem->amount * $hours]
+                    );
+                }
             }
         }
 

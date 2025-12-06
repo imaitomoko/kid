@@ -142,7 +142,7 @@ class AdminReservationController extends Controller
         $validated = $request->validate([
             'date' => 'required|date',
             'child_name' => 'required|string|max:255',
-            'is_under_3' => 'required|boolean',
+            'is_under_3' => 'required|in:0,1,2',
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
             'meal' => 'nullable|boolean',

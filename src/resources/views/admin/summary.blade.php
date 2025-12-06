@@ -33,19 +33,27 @@
         @endphp
         <tbody>
             @foreach($summary as $date => $s)
-            @php 
-                $subtotal = $s['careFee'] + $s['mealFee'] + $s['snackFee'];
-                $totalUnder4 += $s['under4'];
-                $totalOver4 += $s['over4'];
+            @php
+                $careFee  = $s['careFee']  ?? 0;
+                $mealFee  = $s['mealFee']  ?? 0;
+                $snackFee = $s['snackFee'] ?? 0;
+
+                $subtotal = $careFee + $mealFee + $snackFee;
+
+                $under4 = $s['under4'] ?? 0;
+                $over4  = $s['over4']  ?? 0;
+
+                $totalUnder4 += $under4;
+                $totalOver4 += $over4;
             @endphp
     
             <tr>
                 <td>{{ \Carbon\Carbon::parse($date)->format('d') }}</td>
-                <td>{{ $s['under4'] }}</td>
-                <td>{{ $s['over4'] }}</td>
-                <td>{{ number_format($s['careFee']) }}</td>
-                <td>{{ number_format($s['mealFee']) }}</td>
-                <td>{{ number_format($s['snackFee']) }}</td>
+                <td>{{ $under4 }}</td>
+                <td>{{ $over4 }}</td>
+                <td>{{ number_format($careFee) }}</td>
+                <td>{{ number_format($mealFee) }}</td>
+                <td>{{ number_format($snackFee) }}</td>
                 <td>{{ number_format($subtotal) }}</td>
             </tr>
             @endforeach

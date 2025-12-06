@@ -1,4 +1,5 @@
 @extends('layouts.admin')
+
 @section('css')
 <link rel="stylesheet" href="{{ asset('css/admin/nonmember_book.css') }}">
 @endsection
@@ -42,7 +43,8 @@
 
         <div class="mb-3">
             <label class="form-label">年齢区分</label>
-            <select name="is_under_3" class="form-select" value="{{ old('is_under_3') }}" required>
+            <select name="is_under_3" class="form-select" required>
+                <option value="2">誰でも通園</option>
                 <option value="1">3歳未満児</option>
                 <option value="0">3歳以上児</option>
             </select>
