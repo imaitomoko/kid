@@ -1,0 +1,147 @@
+.content {
+    margin: 80px auto;
+    max-width: 760px;
+    padding-top: 120px;
+}
+
+.heading {
+    text-align: center;
+    position: fixed;
+    top: 80px;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    z-index: 1100;
+}
+
+h2 {
+    display: inline-block;
+    border-bottom: 2px solid #4f4c4c;
+    padding-bottom: 4px;
+    color: #4f4c4c;
+}
+
+.search form {
+    display: flex;
+    align-items: flex-end;
+    /* 下揃えで整列 */
+    gap: 15px;
+    /* 各項目の間隔 */
+}
+
+.search .form-group {
+    flex: 1;
+    /* 幅を均等に伸ばす */
+    margin-bottom: 0;
+    /* 縦並び用の余白を消す */
+}
+
+.search label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 6px;
+    color: #333;
+}
+
+.search .form-control {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+}
+
+.search .btn {
+    height: 34px;
+    padding: 0 20px;
+    font-size: 16px;
+    white-space: nowrap;
+    border: none;
+    background-color: #28a745;
+    border-radius: 3px;
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+.mb-3 {
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+}
+
+.month {
+    font-size: 22px;
+    color: #4f4c4c;
+    font-weight: bold;
+}
+
+.custom_table {
+    width: 100%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background: #fff;
+    font-size: 15px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+    text-align: center;
+}
+
+/* ヘッダー部分 */
+.custom_table thead th {
+    background-color: #3b8d4c;
+    color: #fff;
+    padding: 10px 12px;
+    text-align: center;
+    font-weight: 600;
+    border-left: 1px solid #dce5d8;
+}
+
+/* 本文セル */
+.custom_table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #dce5d8;
+    border-left: 1px solid #dce5d8;
+}
+
+/* 偶数・奇数行の色分け */
+.custom_table tbody tr:nth-child(odd) {
+    background-color: #f9fcf8;
+    /* 明るい緑がかった白 */
+}
+
+.custom_table tbody tr:nth-child(even) {
+    background-color: #eef7f0;
+    /* ほんのりグリーン */
+}
+
+/* フッター合計行 */
+.custom_table tfoot tr.table-total td {
+    background-color: #d4e9d7;
+    font-weight: bold;
+    border-top: 2px solid #3b8d4c;
+    border-left: 1px solid #bbc5b7;
+    text-align: center;
+    vertical-align: middle;
+    padding: 8px 12px;
+}
+
+.back__button {
+    text-align: center;
+    width: 100px;
+    margin: 60px auto;
+    padding: 5px;
+    height: 35px;
+    border: none;
+    border-radius: 3px;
+    background: #808080;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.back {
+    color: #fff;
+    text-decoration: none;
+}

@@ -417,6 +417,10 @@ class AdminListController extends Controller
             return back()->with('error', 'データが存在しません。');
         }
 
+        if ($attendance->accounted) {
+            return back()->with('error', '会計済みのため編集できません。');
+        }
+
         $attendance->actual_start_time = $request->actual_start_time;
         $attendance->save();
 

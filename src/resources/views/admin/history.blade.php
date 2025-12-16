@@ -7,11 +7,13 @@
 @section('content')
 <div class="content">
     <div class="heading">
-        <h2>履歴管理</h2>
+        <h2>個別利用履歴</h2>
     </div>
 
     <div class="search">
-        <form action="{{ route('admin.history') }}" method="GET" class="mb-4">
+        <form action="{{ route('admin.history.show') }}" method="GET" class="mb-4">
+            <input type="hidden" name="month" value="{{ $month->format('Y-m') }}">
+
             <div class="form-group">
                 <input type="text" id="child_name" name="child_name" class="form-control" placeholder="子ども名を入力" value="{{ request('child_name') }}"autocomplete="off">
                 <ul id="child_suggestions" class="list-group position-absolute" style="z-index: 1000;"></ul>
@@ -27,9 +29,9 @@
 
 
     <div class="mb-3">
-        <a href="{{ route('admin.history', ['child_name' => $childName, 'month' => $prevMonth->format('Y-m')]) }}" class="before">&laquo; 前月</a>
+        <a href="{{ route('admin.history.show', ['child_name' => $childName, 'month' => $prevMonth->format('Y-m')]) }}" class="before">&laquo; 前月</a>
         <span class="month">{{ $month->format('Y年m月') }}</span>
-        <a href="{{ route('admin.history', ['child_name' => $childName, 'month' => $nextMonth->format('Y-m')]) }}" class="before">翌月 &raquo;</a>
+        <a href="{{ route('admin.history.show', ['child_name' => $childName, 'month' => $nextMonth->format('Y-m')]) }}" class="before">翌月 &raquo;</a>
     </div>
 
     <table class="custom_table">
@@ -73,7 +75,7 @@
     </div>
 
     <div class="back__button">
-        <a class="back" href="{{ route('admin') }}">back</a>
+        <a class="back" href="{{ route('admin.history') }}">back</a>
     </div>
 </div>
 

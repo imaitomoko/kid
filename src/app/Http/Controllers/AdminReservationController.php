@@ -89,9 +89,7 @@ class AdminReservationController extends Controller
         // 会員予約キャンセル（子どもID＋日付でまとめて）
         if ($childId) {
             $memberReservations = Reservation::where('child_id', $childId)
-                ->whereHas('slot.dateValue', function ($q) use ($date) {
-                    $q->whereDate('date', $date);
-                })
+                ->whereHas('slot.dateValue', fn($q) => $q->whereDate('date', $date))
                 ->get();
 
             foreach ($memberReservations as $r) {
@@ -99,30 +97,24 @@ class AdminReservationController extends Controller
                     $r->slot->increment('capacity', 1); // 予約枠を戻す
                 }
                 $r->delete();
-                $deleted = true;
             }
-        }
-
-        // 非会員予約キャンセル（date_value_id + start/end_timeで絞る）
-        $nonMemberQuery = NonmemberReservation::whereHas('dateValue', function ($q) use ($date) {
-            $q->whereDate('date', $date);
-        });
-
-        if ($startTime && $endTime) {
-            $nonMemberQuery->where('start_time', $startTime)
-                            ->where('end_time', $endTime);
-        }
-
-        $count = $nonMemberQuery->delete();
-        if ($count > 0) {
             $deleted = true;
         }
 
-        if ($deleted) {
-            return back()->with('success', '予約をキャンセルしました。');
-        } else {
-            return back()->with('error', '該当する予約は見つかりませんでした。');
+        // 非会員予約キャンセル（date_value_id + start/end_timeで絞る）
+        if (!$childId && $startTime && $endTime) {
+            $count = NonmemberReservation::whereHas('dateValue', fn($q) => $q->whereDate('date', $date))
+                ->where('start_time', $startTime)
+                ->where('end_time', $endTime)
+                ->delete();
+
+            if ($count > 0) $deleted = true;
         }
+
+        return $deleted
+            ? back()->with('success', '予約をキャンセルしました。')
+            : back()->with('error', '該当する予約は見つかりませんでした。');
+
     }
 
     public function createNonMember($date)

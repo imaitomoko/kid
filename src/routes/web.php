@@ -75,6 +75,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     ->name('admin.nonmember.create');
     Route::post('admin/nonmember/store', [AdminReservationController::class, 'storeNonMember'])
     ->name('admin.nonmember.store');
+
     Route::get('admin/member_proxy/{date}', [AdminReservationController::class, 'createMemberProxy'])
     ->name('admin.member_proxy.create');
     Route::post('admin/reservations/member-proxy/store', [AdminReservationController::class, 'storeMemberProxy'])
@@ -95,8 +96,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::delete('fees/destroy/{id}', [AdminFeeController::class, 'destroy'])->name('admin.fee.destroy');
     Route::get('/summary', [AdminSummaryController::class, 'index'])->name('admin.summary');
 
-    Route::get('/history', [AdminHistoryController::class, 'history'])->name('admin.history');
+    Route::get('/history', [AdminHistoryController::class, 'index'])->name('admin.history');
+    Route::get('/history/show', [AdminHistoryController::class, 'history'])->name('admin.history.show');
     Route::get('/child-search', [AdminHistoryController::class, 'childSearch']);
+    Route::get('/anyone-history/show', [AdminHistoryController::class, 'anyoneHistory'])->name('admin.anyone.history');
+    Route::get('/anyone-child-search', [AdminHistoryController::class, 'anyoneChildSearch'])
+    ->name('admin.anyone.child.search');
 
 
 });

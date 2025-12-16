@@ -1,5 +1,6 @@
 @php
     $attendance = $reservation->attendance;
+    $isAccounted = $attendance && $attendance->accounted;
     $feeTotal = $attendance ? $attendance->feeItems->sum(fn($f) => $f->feeItem->amount ?? 0) : 0;
 @endphp
 
@@ -35,16 +36,18 @@
                     @csrf
                     @method('PUT')
                     <input type="hidden" name="nonmember" value="{{ $isNonmember ? '1' : '0' }}">
-                    <input type="time" name="actual_start_time"
+                    <div class="input-group input-group-sm border border-primary rounded {{ $isAccounted ? 'opacity-50' : '' }}">
+                        <input type="time" name="actual_start_time"
                         value="{{ \Carbon\Carbon::parse($attendance->actual_start_time)->format('H:i') }}"
                         class="form-control form-control-sm" style="width:100px;">
-                    <button type="submit" class="btn btn-primary btn-sm ms-1" title="編集" ><i class="fa-solid fa-pen"></i></button>
+                        <button type="submit" class="btn btn-primary btn-sm ms-1" title="編集" {{ $isAccounted ? 'disabled' : '' }}><i class="fa-solid fa-pen"></i></button>
+                    </div>
                 </form>
                 <form action="{{ route('attendance.deleteStartTime', ['id' => $reservation->id]) }}" method="POST" onsubmit="return confirm('開始時刻を削除しますか？');">
                     @csrf
                     @method('DELETE')
                     <input type="hidden" name="nonmember" value="{{ $isNonmember ? '1' : '0' }}">
-                    <button type="submit" class="btn btn-danger btn-sm" title="削除"><i class="fa-solid fa-trash"></i></button>
+                    <button type="submit" class="btn btn-danger btn-sm" title="削除" {{ $isAccounted ? 'disabled' : '' }}><i class="fa-solid fa-trash"></i></button>
                 </form>
             </div>
         @endif
@@ -59,16 +62,19 @@
                     @csrf
                     @method('PUT')
                     <input type="hidden" name="nonmember" value="{{ $isNonmember ? '1' : '0' }}">
-                    <input type="time" name="actual_end_time"
+                    <div class="input-group input-group-sm border border-primary rounded {{ $isAccounted ? 'opacity-50' : '' }}">
+                        <input type="time" name="actual_end_time"
                         value="{{ \Carbon\Carbon::parse($attendance->actual_end_time)->format('H:i') }}"
                         class="form-control form-control-sm" style="width:100px;">
-                    <button type="submit" class="btn btn-primary btn-sm ms-1" title="編集"><i class="fa-solid fa-pen"></i></button>
+                        <button type="submit" class="btn btn-primary btn-sm ms-1" title="編集" {{ $isAccounted ? 'disabled' : '' }}><i class="fa-solid fa-pen"></i></button>
+                    </div>
+                    
                 </form>
                 <form action="{{ route('attendance.deleteEndTime', ['id' => $reservation->id]) }}" method="POST" onsubmit="return confirm('利用終了を削除しますか？');">
                     @csrf
                     @method('DELETE')
                     <input type="hidden" name="nonmember" value="{{ $isNonmember ? '1' : '0' }}">
-                    <button type="submit" class="btn btn-danger btn-sm" title="削除"><i class="fa-solid fa-trash"></i></button>
+                    <button type="submit" class="btn btn-danger btn-sm" title="削除" {{ $isAccounted ? 'disabled' : '' }}><i class="fa-solid fa-trash"></i></button>
                 </form>
             </div>
         @endif
@@ -82,7 +88,7 @@
                     @csrf
                     @method('DELETE')
                     <input type="hidden" name="nonmember" value="{{ $isNonmember ? '1' : '0' }}">
-                    <button type="submit" class="btn btn-danger btn-sm" title="削除">
+                    <button type="submit" class="btn btn-danger btn-sm" title="削除" {{ $isAccounted ? 'disabled' : '' }}>
                         <i class="fa-solid fa-trash"></i>
                     </button>
                 </form>
@@ -91,7 +97,7 @@
             <form action="{{ route('attendance.meal', ['id' => $reservation->id]) }}" method="POST">
                 @csrf
                 <input type="hidden" name="nonmember" value="{{ $isNonmember ? '1' : '0' }}">
-                <button type="submit" class="btn btn-primary btn-sm">給食利用</button>
+                <button type="submit" class="btn btn-primary btn-sm" {{ $isAccounted ? 'disabled' : '' }}>給食利用</button>
             </form>
         @endif
 
@@ -102,7 +108,7 @@
                     @csrf
                     @method('DELETE')
                     <input type="hidden" name="nonmember" value="{{ $isNonmember ? '1' : '0' }}">
-                    <button type="submit" class="btn btn-danger btn-sm" title="削除">
+                    <button type="submit" class="btn btn-danger btn-sm" title="削除" {{ $isAccounted ? 'disabled' : '' }}>
                         <i class="fa-solid fa-trash"></i>
                     </button>
                 </form>
@@ -111,7 +117,7 @@
             <form action="{{ route('attendance.snack', ['id' => $reservation->id]) }}" method="POST">
                 @csrf
                 <input type="hidden" name="nonmember" value="{{ $isNonmember ? '1' : '0' }}">
-                <button type="submit" class="btn btn-primary btn-sm">おやつ利用</button>
+                <button type="submit" class="btn btn-primary btn-sm" {{ $isAccounted ? 'disabled' : '' }}>おやつ利用</button>
             </form>
         @endif
     </td>

@@ -11,7 +11,7 @@
     </div>
     <h3>{{ \Carbon\Carbon::parse($date)->format('Y年m月d日') }}</h3>
 
-    <form action="{{ route('admin.nonmember.store') }}" method="POST">
+    <form class="form" action="{{ route('admin.nonmember.store') }}" method="POST">
         @csrf
         @php
             use Carbon\Carbon;

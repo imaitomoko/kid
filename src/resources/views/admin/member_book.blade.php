@@ -1,4 +1,5 @@
 @extends('layouts.admin')
+
 @section('css')
 <link rel="stylesheet" href="{{ asset('css/admin/member_book.css') }}">
 @endsection 
@@ -52,7 +53,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($slots as $slot)
+                @foreach($slots as $i => $slot)
                     @php
                         $available = $slot->capacity;
                     @endphp
@@ -62,7 +63,7 @@
                         <td>{{ $available }}</td>
                         <td>
                             @if($available > 0)
-                                <input type="checkbox" name="reservation_slot_ids[]" value="{{ $slot->id }}">
+                                <input type="checkbox" class="slot-checkbox" name="reservation_slot_ids[]" value="{{ $slot->id }}" data-index="{{ $i }}">
                             @else
                                 <input type="checkbox" disabled>
                             @endif
@@ -119,5 +120,128 @@
         <a class="back" href="{{ route('admin.reservation.list', ['date' => $date]) }}">back</a>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    let lastCheckedIndex = null;
+
+    const checkboxes = document.querySelectorAll('.slot-checkbox');
+
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function () {
+            const index = parseInt(this.dataset.index);
+
+            // --- チェック解除禁止（連続性を崩す場合） ---
+            if (!this.checked) {
+                if (isBreakingContinuousSelection()) {
+                    this.checked = true;
+                    alert('途中のチェックは外せません。');
+                } else {
+                    // 端のチェック解除 → 新規開始
+                    lastCheckedIndex = null;
+                }
+                return;
+            }
+
+            // --- 初回チェック設定 ---
+            if (lastCheckedIndex === null) {
+                lastCheckedIndex = index;
+                return;
+            }
+
+            // --- 範囲自動チェック ---
+            fillRange(lastCheckedIndex, index);
+            lastCheckedIndex = index;
+        });
+    });
+
+    // 連続性が崩れるチェック解除を拒否
+    function isBreakingContinuousSelection() {
+        const checkedList = [...checkboxes].filter(cb => cb.checked);
+        if (checkedList.length <= 1) return false;
+
+        const indexes = checkedList.map(cb => parseInt(cb.dataset.index)).sort((a, b) => a - b);
+        for (let i = 1; i < indexes.length; i++) {
+            if (indexes[i] !== indexes[i - 1] + 1) return true;
+        }
+        return false;
+    }
+
+    // 範囲自動チェック
+    function fillRange(startIdx, endIdx) {
+        const min = Math.min(startIdx, endIdx);
+        const max = Math.max(startIdx, endIdx);
+
+        checkboxes.forEach(cb => {
+            const idx = parseInt(cb.dataset.index);
+            if (idx >= min && idx <= max && !cb.disabled) {
+                cb.checked = true;
+            }
+        });
+    }
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    let lastCheckedIndex = null;
+
+    const checkboxes = document.querySelectorAll('.slot-checkbox');
+
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function () {
+            const index = parseInt(this.dataset.index);
+
+            // --- チェック解除禁止（連続性を崩す場合） ---
+            if (!this.checked) {
+                if (isBreakingContinuousSelection()) {
+                    this.checked = true;
+                    alert('途中のチェックは外せません。');
+                } else {
+                    // 端のチェック解除 → 新規開始
+                    lastCheckedIndex = null;
+                }
+                return;
+            }
+
+            // --- 初回チェック設定 ---
+            if (lastCheckedIndex === null) {
+                lastCheckedIndex = index;
+                return;
+            }
+
+            // --- 範囲自動チェック ---
+            fillRange(lastCheckedIndex, index);
+            lastCheckedIndex = index;
+        });
+    });
+
+    // 連続性が崩れるチェック解除を拒否
+    function isBreakingContinuousSelection() {
+        const checkedList = [...checkboxes].filter(cb => cb.checked);
+        if (checkedList.length <= 1) return false;
+
+        const indexes = checkedList.map(cb => parseInt(cb.dataset.index)).sort((a, b) => a - b);
+        for (let i = 1; i < indexes.length; i++) {
+            if (indexes[i] !== indexes[i - 1] + 1) return true;
+        }
+        return false;
+    }
+
+    // 範囲自動チェック
+    function fillRange(startIdx, endIdx) {
+        const min = Math.min(startIdx, endIdx);
+        const max = Math.max(startIdx, endIdx);
+
+        checkboxes.forEach(cb => {
+            const idx = parseInt(cb.dataset.index);
+            if (idx >= min && idx <= max && !cb.disabled) {
+                cb.checked = true;
+            }
+        });
+    }
+});
+</script>
+
 @endsection
 
