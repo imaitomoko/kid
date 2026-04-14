@@ -116,14 +116,14 @@ class AdminUserController extends Controller
 
     public function edit($id)
     {
-        $user = User::with(['child.siblings', 'contacts'])->findOrFail($id);
+        $user = User::with(['children.siblings', 'contacts'])->findOrFail($id);
 
         return view('admin.user_edit', compact('user'));
     }
 
     public function update(Request $request, $id)
     {
-        $user = User::with(['child.siblings', 'contacts'])->findOrFail($id);
+        $user = User::with(['children.siblings', 'contacts'])->findOrFail($id);
 
         $validated = $request->validate([
             'name' => 'required|string|max:25',
@@ -149,9 +149,10 @@ class AdminUserController extends Controller
             $user->save();
         }
 
-        $child = $user->child()->updateOrCreate(
-            ['user_id' => $user->id],
+        $child = $user->children()->updateOrCreate(
+            ['id' => $validated['child_id'] ?? null],
             [
+                'user_id'    => $user->id,
                 'child_name' => $validated['child_name'],
                 'birthday'   => $validated['birthday'] ?? null,
                 'allergy'    => $validated['allergy'] ?? null,

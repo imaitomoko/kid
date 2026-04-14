@@ -28,7 +28,7 @@ class AuthController extends Controller
 
             // ロールに応じてリダイレクト
             return match ($user->role) {
-                'admin' => redirect('/admin'),
+                'admin' => redirect()->route('admin'),
                 'teacher' => redirect('/teacher'),
                 default => redirect('/dashboard'),
             };
