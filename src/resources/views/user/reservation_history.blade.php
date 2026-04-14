@@ -47,12 +47,12 @@
                 </div>
             @endforeach
         @empty
-            <p>予約はありません。</p>
+            <p class="no-reservation">予約はありません。</p>
         @endforelse  
     </div>
 
     <div class="back__button">
-        <a class="back" href="{{ route('user.dashboard') }}">back</a>
+        <a class="back" href="{{ route('user.child.select', ['child_id' => $child->id]) }}">back</a>
     </div>
 </div>
 @endsection

@@ -129,10 +129,18 @@ Route::middleware(['auth', 'role:teacher'])->prefix('teacher')->name('teacher.')
 
 Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/dashboard', [MypageController::class, 'index'])->name('user.dashboard');
-    Route::get('/profile', [MypageController::class, 'create'])->name('user.profile');
-    Route::post('/profile/update', [MypageController::class, 'update'])->name('user.profile.update');
-    Route::get('/mypage', [MypageController::class, 'mypage'])->name('user.mypage');
+    Route::get('/child/edit', [MypageController::class, 'childEdit'])->name('user.child.edit');
+    Route::put('/child/update', [MypageController::class, 'childUpdate'])->name('user.child.update');
     Route::get('/history/{month?}', [MypageController::class, 'usageHistory'])->name('user.history');
+    Route::get('/child/create', [MypageController::class, 'show'])->name('user.child.create');
+    Route::post('/child/store', [MypageController::class, 'store'])->name('user.child.store');
+    Route::get('/child/{child_id}', [MypageController::class, 'search'])->name('user.child.select');
+    Route::get('/profile', [MypageController::class, 'create'])->name('user.profile');
+    Route::post('/profile/register', [MypageController::class, 'register'])->name('user.profile.register');
+    Route::get('/parent/edit', [MypageController::class, 'parentEdit'])->name('user.parent.edit');
+    Route::post('/parent/update', [MypageController::class, 'parentUpdate'])->name('user.parent.update');
+    Route::get('/mypage', [MypageController::class, 'mypage'])->name('user.mypage');
+    
     Route::get('/reservation', [ReservationController::class, 'index'])->name('user.reservation');
     Route::get('/reservation/list/{date}', [ReservationController::class, 'show'])->name('user.reservation.list');
     Route::post('/reservation/confirm', [ReservationController::class, 'confirm'])->name('user.reservation.confirm');

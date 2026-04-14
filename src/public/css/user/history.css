@@ -35,32 +35,32 @@ before {
     font-size: 14px;
     font-family: 'Noto Sans JP', sans-serif;
     background-color: #f9fff9;
-    border: 1px solid #d0e6d0;
+    border: 1px solid #cfe9dc;
 }
 
 .custom_table th,
 .custom_table td {
-    padding: 6px 4px;
+    padding: 8px 6px;
     text-align: center;
     word-break: keep-all;
-    border: 1px solid #d0e6d0;
+    border: 1px solid #cfe9dc;
 }
 
 .custom_table th {
-    background-color: #c8f0c8;
+    background-color: #10B981;
+    color: #ffffff;
     font-weight: bold;
-    color: #1f4d1f;
     position: sticky;
     top: 0;
     z-index: 1;
 }
 
 .custom_table tbody tr:nth-child(odd) {
-    background-color: #eaf7ea;
+    background-color: #ecfdf5;
 }
 
 .custom_table tbody tr:nth-child(even) {
-    background-color: #f3fff3;
+    background-color: #f6fffb;
 }
 
 .custom_table tr {
@@ -75,6 +75,8 @@ before {
 .total_fee {
     text-align: right;
     margin: 30px 10px;
+    font-weight: bold;
+    color: #065f46;
 }
 
 p {

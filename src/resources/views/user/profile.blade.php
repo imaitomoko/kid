@@ -7,10 +7,10 @@
 @section('content')
 <div class="content">
     <div class="heading">
-        <h2>ユーザー情報の登録</h2>
+        <h2>お子様と保護者情報の登録</h2>
     </div>
 
-    <form class="form" action="{{ route('user.profile.update') }}" method="POST">
+    <form class="form" action="{{ route('user.profile.register') }}" method="POST">
         @csrf
         @php
         $old_names = old('contact_name', []);

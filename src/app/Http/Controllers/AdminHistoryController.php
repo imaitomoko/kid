@@ -29,6 +29,7 @@ class AdminHistoryController extends Controller
 
     public function history(Request $request)
     {
+
         // 月指定
         $month = $request->input('month') ? Carbon::parse($request->input('month')) : Carbon::now();
 
@@ -61,11 +62,6 @@ class AdminHistoryController extends Controller
             }
         ])
         ->where('accounted', 1)
-        ->whereDoesntHaveMorph(
-            'reservable',
-            [NonmemberReservation::class],
-            fn($q) => $q->where('is_under_3', 2)
-        )
 
         ->where(function ($query) use ($startOfMonth, $endOfMonth) {
             $query
@@ -134,8 +130,6 @@ class AdminHistoryController extends Controller
                 'subtotal' => $subtotal,
             ];
             
-
-
             $totalAll += $subtotal;
             $totalNursery += $nurseryAmount;
             $totalMeal += $mealAmount;

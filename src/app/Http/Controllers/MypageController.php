@@ -16,26 +16,28 @@ use Carbon\Carbon;
 
 class MypageController extends Controller
 {
+    //ユーザートップページ
     public function index()
     {
         $user = Auth::user(); 
-        $child = $user->child;
+        $children = $user->children;
 
-        return view('user.dashboard', compact('user','child'));
+        return view('user.dashboard', compact('user','children'));
     }
 
+    //初回子ども・ほごしゃ登録ページ表示
     public function create()
     {
         $user = Auth::user();
-        $child = $user->child()->first(); // 1人目の子ども
+        $child = $user->children()->first(); // 1人目の子ども
         $contacts = $user->contacts;         // 連絡先一覧
         $siblings = $child ? $child->siblings : collect(); // 兄弟姉妹
 
         return view('user.profile', compact('user', 'child', 'contacts', 'siblings'));
     }
 
-
-    public function update(Request $request)
+    //子ども保護者登録
+    public function register(Request $request)
     {
         $validated = $request->validate([
             'address'       => 'nullable|string|max:255',
@@ -55,18 +57,12 @@ class MypageController extends Controller
             'address' => $validated['address'] ?? null,
         ]);
 
-        $child = $user->child()->first();
-
-        if ($child) {
-            $child->update([
-                'child_name' => $validated['child_name'],
-                'birthday'   => $validated['birthday'] ?? null,
-                'allergy'    => $validated['allergy'] ?? null,
-                'gender'     => $validated['gender'] ?? null,
-            ]);
-        }
-
-        $user->contacts()->delete();
+        $child = $user->children()->create([], [
+            'child_name' => $validated['child_name'] ?? null,
+            'birthday'   => $validated['birthday'] ?? null,
+            'allergy'    => $validated['allergy'] ?? null,
+            'gender'     => $validated['gender'] ?? null,
+        ]);
 
         if ($request->has('contact_name')) {
             foreach ($request->contact_name as $i => $name) {
@@ -80,10 +76,7 @@ class MypageController extends Controller
             }
         }
 
-         // --- Siblings 更新（全削除→再登録）---
-        if ($child) {
-            $child->siblings()->delete();
-
+        if ($request->has('sibling_name')) {
             foreach ($request->sibling_name as $name) {
                 if ($name) {
                     $child->siblings()->create([
@@ -93,13 +86,130 @@ class MypageController extends Controller
             }
         }
 
-        return redirect()->route('user.dashboard')->with('success', 'プロフィールを更新しました');
+        return redirect()->route('user.dashboard')->with('success', '初回登録が完了しました');
+    }
+
+    //子ども追加登録ページ表示
+    public function show()
+    {
+        return view('user.child_create', [
+            'child' => null
+        ]);
+    }
+
+    //子ども情報登録
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'child_name'        => 'required|string|max:100',
+            'birthday'          => 'required|date',
+            'gender'            => 'required|string|in:男,女',
+            'allergy'           => 'nullable|string|max:250',
+            'sibling_name.*'    => 'nullable|string|max:25',
+        ]);
+
+        $user = Auth::user();
+
+        $child = $user->children()->create([
+            'child_name' => $validated['child_name'],
+            'birthday'   => $validated['birthday'],
+            'gender'     => $validated['gender'],
+            'allergy'    => $validated['allergy'] ?? null,
+        ]);
+
+        if ($request->has('sibling_name')) {
+            foreach ($request->sibling_name as $name) {
+                if (!empty($name)) {
+                    $child->siblings()->create([
+                        'sibling_name' => $name,
+                    ]);
+                }
+            }
+        }
+
+        return redirect()
+            ->route('user.dashboard')
+            ->with('success', 'お子様情報を登録しました');
+    }
+
+    //保護者情報の編集ページ
+    public function parentEdit()
+    {
+        $user = Auth::user();
+        $contacts = $user->contacts;         // 連絡先一覧
+
+        return view('user.parent_edit', compact('user', 'contacts'));
+    }
+
+    //保護者情報の編集登録
+    public function parentUpdate(Request $request)
+    {
+        $validated = $request->validate([
+            'address'       => 'nullable|string|max:255',
+            'gender'  => 'nullable|string|in:男,女',
+            'relationship.*'  => 'nullable|string|max:20',
+            'phone_number.*'  => 'nullable|string|max:50',
+            'contact_name.*'  => 'nullable|string|max:100',
+        ]);
+
+        $user = Auth::user();
+
+        $user->update([
+            'address' => $validated['address'] ?? null,
+        ]);
+
+        $contacts = $user->contacts;
+
+        foreach ($request->contact_name as $i => $name) {
+            // 何も入力されていない行はスキップ
+            if (
+                empty($name) &&
+                empty($request->relationship[$i]) &&
+                empty($request->phone_number[$i])
+            ) {
+                continue;
+            }
+
+            // 既存データがあれば更新
+            if (isset($contacts[$i])) {
+                $contacts[$i]->update([
+                    'contact_name' => $name,
+                    'relationship' => $request->relationship[$i] ?? null,
+                    'phone_number' => $request->phone_number[$i] ?? null,
+                ]);
+            } else {
+                // なければ新規作成
+                $user->contacts()->create([
+                    'contact_name' => $name,
+                    'relationship' => $request->relationship[$i] ?? null,
+                    'phone_number' => $request->phone_number[$i] ?? null,
+                ]);
+            }
+        }
+
+        return redirect()->route('user.dashboard')->with('success', '保護者情報を更新しました');
+    }
+
+    //子ども選択ページ
+    public function search($child_id)
+    {
+        $user = Auth::user(); 
+        $child = $user->children()->where('id', $child_id)->firstOrFail();
+
+        session(['child_id' => $child->id]);
+
+        return view('user.child_select', compact('child'));
     }
 
     public function mypage() 
     {
         $user = Auth::user(); 
-        $child = $user->child;
+        $child = null;
+        if (session()->has('child_id')) {
+            $child = $user->children()
+                ->where('id', session('child_id'))
+                ->first();
+        }
 
         return view('user.mypage', compact('user','child'));
 
@@ -108,12 +218,14 @@ class MypageController extends Controller
     public function  usageHistory(Request $request, $month = null)
     {
         $user = Auth::user(); 
-        $child = $user->child;
 
-        if (!$child) {
-            abort(404, 'Child not found');
+        if (!session()->has('child_id')) {
+            abort(404, 'Child not selected');
         }
 
+        $child = $user->children()
+            ->where('id', session('child_id'))
+            ->firstOrFail();
 
         $currentMonth = $month ? Carbon::parse($month . '-01') : now()->startOfMonth();
 
@@ -136,23 +248,78 @@ class MypageController extends Controller
         ->with(['reservable.slot.dateValue'])
         ->get();
 
-        $usageDates = $attendances->map(function ($a) {
-            return $a->reservable->slot->dateValue->date;  // 実際の利用日
-        })->unique()->sort();
+        $attendances = $attendances->filter(function ($a) {
+            return $a->actual_start_time && $a->actual_end_time;
+        });
 
-        $totalFee = $attendances->sum('total_fee');
+        $histories = $attendances->map(function ($a) {
+            return [
+                'date' => $a->reservable->slot->dateValue->date,
+                'start_time' => $a->actual_start_time,
+                'end_time'   => $a->actual_end_time,
+                'meal'       => $a->meal_used === 'yes',
+                'snack'      => $a->snack_used === 'yes',
+                'fee'        => $a->accounted == 0 ? null : $a->total_fee,
+                'accounted'  => $a->accounted,
+            ];
+        });
+
+        $totalFee = $attendances
+            ->where('accounted', 1)
+            ->sum('total_fee');
 
         return view('user.history', compact(
-            'attendances',
-            'usageDates',
+            'histories',
             'currentMonth',
             'prevMonth',
             'nextMonth',
             'child',
             'totalFee'
         ));
-
-
     }
+
+    public function childEdit()
+    {
+        $user = Auth::user();
+
+        if (!session()->has('child_id')) {
+            abort(404);
+        }
+
+        $child = $user->children()
+            ->where('id', session('child_id'))
+            ->firstOrFail();
+
+        return view('user.child_edit', compact('child'));
+    }
+
+    public function childUpdate(Request $request)
+    {
+        $user = Auth::user();
+
+        if (!session()->has('child_id')) {
+            abort(404);
+        }
+
+        $child = $user->children()
+            ->where('id', session('child_id'))
+            ->firstOrFail();
+
+        $validated = $request->validate([
+            'child_name'        => 'required|string|max:100',
+            'birthday'          => 'required|date',
+            'gender'            => 'required|string|in:男,女',
+            'allergy'           => 'nullable|string|max:250',
+            'sibling_name.*'    => 'nullable|string|max:25',
+        ]);
+
+        $child->update($validated);
+
+        return redirect()
+            ->route('user.mypage')
+            ->with('success', 'お子様情報を更新しました');
+    }
+
+
     //
 }

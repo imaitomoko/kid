@@ -37,7 +37,7 @@
                     @method('PUT')
                     <input type="hidden" name="nonmember" value="{{ $isNonmember ? '1' : '0' }}">
                     <div class="input-group input-group-sm border border-primary rounded {{ $isAccounted ? 'opacity-50' : '' }}">
-                        <input type="time" name="actual_start_time"
+                        <input type="time" name="actual_start_time" max="{{ $attendance->actual_end_time }}"
                         value="{{ \Carbon\Carbon::parse($attendance->actual_start_time)->format('H:i') }}"
                         class="form-control form-control-sm" style="width:100px;">
                         <button type="submit" class="btn btn-primary btn-sm ms-1" title="編集" {{ $isAccounted ? 'disabled' : '' }}><i class="fa-solid fa-pen"></i></button>

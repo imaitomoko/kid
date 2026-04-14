@@ -55,9 +55,9 @@ class User extends Authenticatable
         return $this->hasMany(contact::class);
     }
 
-    public function child()
+    public function children()
     {
-        return $this->hasOne(child::class);
+        return $this->hasMany(Child::class);
     }
 
     public function isProfileComplete(): bool
@@ -66,7 +66,7 @@ class User extends Authenticatable
             return false;
         }
         
-        $child = $this->child;
+        $child = $this->children()->first();
         if(!$child) {
             return false;
         }

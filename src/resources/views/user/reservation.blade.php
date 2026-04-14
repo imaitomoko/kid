@@ -73,7 +73,7 @@
     </table>
 
     <div class="back__button">
-        <a class="back" href="{{ route('user.dashboard') }}">back</a>
+        <a class="back" href="{{ route('user.child.select', ['child_id' => session('child_id')]) }}">back</a>
     </div>
 </div>
 @endsection

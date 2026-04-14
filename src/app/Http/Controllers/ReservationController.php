@@ -10,6 +10,7 @@ use App\Models\ReservationSlot;
 use App\Models\DateValue;
 use App\Models\Child;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 
 class ReservationController extends Controller
@@ -66,7 +67,7 @@ class ReservationController extends Controller
             }
         }
 
-        return view('user.reservation', compact('year', 'month', 'displayMonth', 'dates'));
+        return view('user.reservation', compact('year', 'month', 'displayMonth', 'dates', ));
     }
 
     public function show($date)

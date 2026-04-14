@@ -35,6 +35,13 @@ h3 {
     margin: 20px;
 }
 
+.reservation-cards-wrapper p.no-reservation {
+    margin: 60px 0;
+    color:blue;
+    text-align: center;
+    width: 100%;
+}
+
 .reservation-cards-wrapper {
     display: flex;
     flex-wrap: wrap;

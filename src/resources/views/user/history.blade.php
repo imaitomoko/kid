@@ -7,7 +7,7 @@
 @section('content')
 <div class="content">
     <div class="heading">
-        <h2>マイページ</h2>
+        <h2>利用履歴</h2>
         <h3>{{ $child->child_name }}さん</h3>
     </div>
 
@@ -29,25 +29,27 @@
         </thead>
 
         <tbody>
-        @foreach ($usageDates as $date)
-            @php
-                $att = $attendances->firstWhere(
-                    fn ($a) => $a->reservable->slot->dateValue->date === $date
-                );        
-            @endphp
+        @foreach($histories as $history)
+            <div class="usage-row">
+                <td>{{ \Carbon\Carbon::parse($history['date'])->format('d') }}</td>
 
-            <tr>
-                <td>{{ \Carbon\Carbon::parse($date)->format('d') }}</td>
                 <td>
-                    {{ \Carbon\Carbon::parse($att->actual_start_time)->format('H:i') }}~
-                    <br>{{ \Carbon\Carbon::parse($att->actual_end_time)->format('H:i') }}</br>
+                    {{ \Carbon\Carbon::parse($history['start_time'])->format('H:i') }}
+                    〜
+                    {{ \Carbon\Carbon::parse($history['end_time'])->format('H:i') }} 
                 </td>
+
+                <td> {{ $history['meal'] ? '○' : '－' }}</td>
+                <td> {{ $history['snack'] ? '○' : '－' }}</td>
+
                 <td>
-                    {{ $att->meal_used === 'yes' ? '◯' : '-' }}
+                    @if($history['accounted'] == 0)
+                        <span class="unaccounted">未会計</span>
+                    @else
+                        {{ number_format($history['fee']) }} 円
+                    @endif
                 </td>
-                <td>{{ $att->snack_used === 'yes' ? '◯' : '-' }}</td>
-                <td>{{ number_format($att->total_fee) }}円</td>
-            </tr>
+            </div>
         @endforeach
         </tbody>
     </table>
