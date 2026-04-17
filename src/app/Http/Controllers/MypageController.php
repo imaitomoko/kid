@@ -28,8 +28,12 @@ class MypageController extends Controller
     //初回子ども・ほごしゃ登録ページ表示
     public function create()
     {
-        $user = Auth::user();
-        $child = $user->children()->first(); // 1人目の子ども
+        $user = Auth::user();$child = $user->children()
+            ->where('child_name', '!=', '')
+            ->whereNotNull('birthday')
+            ->whereNotNull('gender')
+            ->latest()
+            ->first(); // 1人目の子ども
         $contacts = $user->contacts;         // 連絡先一覧
         $siblings = $child ? $child->siblings : collect(); // 兄弟姉妹
 
@@ -40,16 +44,32 @@ class MypageController extends Controller
     public function register(Request $request)
     {
         $validated = $request->validate([
-            'address'       => 'nullable|string|max:255',
-            'child_name'    => 'nullable|string|max:100',
-            'birthday'  => 'nullable|date',
-            'gender'  => 'nullable|string|in:男,女',
-            'relationship.*'  => 'nullable|string|max:20',
-            'phone_number.*'  => 'nullable|string|max:50',
-            'contact_name.*'  => 'nullable|string|max:100',
+            'address'       => 'required|string|max:255',
+            'child_name'    => 'required|string|max:100',
+            'birthday'  => 'required|date',
+            'gender'  => 'required|string|in:男,女',
+            'relationship'   => 'required|array|min:2',
+            'relationship.*'  => 'required|string|max:20',
+            'phone_number'   => 'required|array|min:2',
+            'phone_number.*'  => 'required|string|max:50',
+            'contact_name'   => 'required|array|min:2',
+            'contact_name.*'  => 'required|string|max:100',
             'allergy'  => 'nullable|string|max:250',
             'sibling_name.*'  => 'nullable|string|max:25',
-        ]);
+        ],
+        [
+            'address.required' => '住所を入力してください。',
+            'child_name.required' => 'お子様の名前を入力してください。',
+            'birthday.required' => '生年月日を入力してください。',
+            'gender.required' => '性別を選択してください。',
+            'relationship.required' => '続柄を入力してください。',
+            'relationship.*.required' => '続柄を入力してください。',
+            'phone_number.required' => '電話番号を入力してください。',
+            'phone_number.*.required' => '電話番号を入力してください。',
+            'contact_name.required' => '連絡先名を入力してください。',
+            'contact_name.*.required' => '連絡先名を入力してください。',
+        ]
+    );
 
         $user = Auth::user();
 
@@ -57,23 +77,19 @@ class MypageController extends Controller
             'address' => $validated['address'] ?? null,
         ]);
 
-        $child = $user->children()->create([], [
+        $child = $user->children()->create([
             'child_name' => $validated['child_name'] ?? null,
             'birthday'   => $validated['birthday'] ?? null,
             'allergy'    => $validated['allergy'] ?? null,
             'gender'     => $validated['gender'] ?? null,
         ]);
 
-        if ($request->has('contact_name')) {
-            foreach ($request->contact_name as $i => $name) {
-                if ($name || $request->relationship[$i] || $request->phone_number[$i]) {
-                    $user->contacts()->create([
-                        'contact_name'  => $name,
-                        'relationship'  => $request->relationship[$i] ?? null,
-                        'phone_number'  => $request->phone_number[$i] ?? null,
-                    ]);
-                }
-            }
+        foreach ($validated['contact_name'] as $i => $name) {
+            $user->contacts()->create([
+                'contact_name' => $name,
+                'relationship' => $validated['relationship'][$i],
+                'phone_number' => $validated['phone_number'][$i],
+            ]);
         }
 
         if ($request->has('sibling_name')) {
@@ -106,7 +122,13 @@ class MypageController extends Controller
             'gender'            => 'required|string|in:男,女',
             'allergy'           => 'nullable|string|max:250',
             'sibling_name.*'    => 'nullable|string|max:25',
-        ]);
+        ],
+        [
+            'child_name.required' => 'お子様の名前を入力してください。',
+            'birthday.required' => '生年月日を入力してください。',
+            'gender.required' => '性別を選択してください。',
+        ]    
+    );
 
         $user = Auth::user();
 
@@ -145,12 +167,24 @@ class MypageController extends Controller
     public function parentUpdate(Request $request)
     {
         $validated = $request->validate([
-            'address'       => 'nullable|string|max:255',
-            'gender'  => 'nullable|string|in:男,女',
-            'relationship.*'  => 'nullable|string|max:20',
-            'phone_number.*'  => 'nullable|string|max:50',
-            'contact_name.*'  => 'nullable|string|max:100',
-        ]);
+            'address'       => 'required|string|max:255',
+            'relationship'   => 'required|array|min:2',
+            'relationship.*'  => 'required|string|max:20',
+            'phone_number'   => 'required|array|min:2',
+            'phone_number.*'  => 'required|string|max:50',
+            'contact_name'   => 'required|array|min:2',
+            'contact_name.*'  => 'required|string|max:100',
+        ],
+        [
+            'address.required' => '住所を入力してください。',
+            'relationship.required' => '続柄を入力してください。',
+            'relationship.*.required' => '続柄を入力してください。',
+            'phone_number.required' => '電話番号を入力してください。',
+            'phone_number.*.required' => '電話番号を入力してください。',
+            'contact_name.required' => '連絡先名を入力してください。',
+            'contact_name.*.required' => '連絡先名を入力してください。',
+        ]
+    );
 
         $user = Auth::user();
 
@@ -311,7 +345,13 @@ class MypageController extends Controller
             'gender'            => 'required|string|in:男,女',
             'allergy'           => 'nullable|string|max:250',
             'sibling_name.*'    => 'nullable|string|max:25',
-        ]);
+        ],
+        [
+            'child_name.required' => 'お子様の名前を入力してください。',
+            'birthday.required' => '生年月日を入力してください。',
+            'gender.required' => '性別を選択してください。',
+        ]
+    );
 
         $child->update($validated);
 

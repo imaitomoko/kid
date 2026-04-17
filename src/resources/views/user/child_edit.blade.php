@@ -22,7 +22,7 @@
                 <input type="text" id="child_name" name="child_name" autocomplete="name" class="form-control" value="{{ old('child_name', $child->child_name ?? '') }}">
             </div>
             @error('child_name') 
-            <div class="text-danger"> {{ $message }}</div>
+            <div class="text-danger">{{ $message }}</div>
             @enderror 
         </div>
         <div class="form-group">
@@ -32,7 +32,7 @@
 
             </div>
             @error('birthday') 
-            <div class="text-danger"> {{ $message }}</div>
+            <div class="text-danger">{{ $message }}</div>
             @enderror 
         </div>
         <div class="form-group">
@@ -45,7 +45,7 @@
                 </select>
             </div>
             @error('gender') 
-            <div class="text-danger"> {{ $message }}</div>
+            <div class="text-danger">{{ $message }}</div>
             @enderror 
         </div>
         <div class="form-group">

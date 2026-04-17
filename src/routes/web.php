@@ -62,7 +62,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/admin/book-detail/{id}', [AdminListController::class, 'detail'])
         ->name('admin.book_detail');
 
-    Route::get('/admin/schedule', [AdminScheduleController::class, 'index'])->name('admin.schedule');
+    Route::get('admin/schedule', [AdminScheduleController::class, 'index'])->name('admin.schedule');
     Route::get('/admin/schedule/{date}', [AdminScheduleController::class, 'show'])->name('admin.schedule.show');
     Route::post('/admin/schedule/{date}', [AdminScheduleController::class, 'update'])->name('admin.schedule.update');
 
