@@ -6,7 +6,7 @@
     <style>
         
         body, h3, th, td, tfoot {
-            font-family: 'ipag', sans-serif;
+            font-family: ipag; 
             font-weight: normal;
         }
 

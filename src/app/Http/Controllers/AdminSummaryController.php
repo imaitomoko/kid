@@ -189,6 +189,7 @@ class AdminSummaryController extends Controller
 
     public function downloadPdf(Request $request)
     {
+
         $month = $request->input('month') ? Carbon::parse($request->input('month')) : Carbon::now();
 
         [
@@ -203,11 +204,6 @@ class AdminSummaryController extends Controller
         ] = $this->getSummaryData($month);
 
         $pdf = Pdf::setOptions([
-            'defaultFont' => 'ipag',
-            'fontDir' => '/usr/share/fonts/opentype/ipafont-gothic',
-            'fontCache' => storage_path('fonts'),
-            //'chroot' => storage_path(),
-            //'enable_font_subsetting' => true, 
             'isHtml5ParserEnabled' => true,
             'isRemoteEnabled' => true,
         ])->loadView('admin.summary_pdf', compact(
@@ -216,29 +212,9 @@ class AdminSummaryController extends Controller
             'totalUnder4', 'totalOver4'
         ))->setPaper('A4', 'portrait');
 
-        return $pdf->download($month->format('Y_m') . '_保育料集計.pdf');
+        return $pdf->stream();
     }
 
-    public function testJapanesePdf()
-    {
-        try {
-            $pdf = Pdf::setOptions([
-                'defaultFont' => 'ipag',
-                'isHtml5ParserEnabled' => true,
-                'isRemoteEnabled' => true,
-                'enable_font_subsetting' => false, // 日本語文字化け防止
-            ])
-            ->loadHTML('<p>こんにちは、PDFテストです。</p>')
-            ->setPaper('A4')
-            ->save(storage_path('test.pdf'));
-
-            return $pdf->stream('test.pdf');
-
-
-        } catch (\Exception $e) {
-            dd($e->getMessage());
-        }
-    }
-
+    
     //
 }

@@ -95,7 +95,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::put('fees/update/{id}', [AdminFeeController::class, 'update'])->name('admin.fee.update');
     Route::delete('fees/destroy/{id}', [AdminFeeController::class, 'destroy'])->name('admin.fee.destroy');
     Route::get('/summary', [AdminSummaryController::class, 'index'])->name('admin.summary');
-
+    Route::get('/summary/pdf', [AdminSummaryController::class, 'downloadPdf'])->name('admin.summary.pdf');
     Route::get('/history', [AdminHistoryController::class, 'index'])->name('admin.history');
     Route::get('/history/show', [AdminHistoryController::class, 'history'])->name('admin.history.show');
     Route::get('/child-search', [AdminHistoryController::class, 'childSearch']);
