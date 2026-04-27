@@ -172,7 +172,16 @@ class ReservationController extends Controller
 
     public function history()
     {
-        $child = Child::where('user_id', auth()->user()->id)->first();
+
+        $user = Auth::user(); 
+
+        if (!session()->has('child_id')) {
+            abort(404, 'Child not selected');
+        }
+
+        $child = $user->children()
+            ->where('id', session('child_id'))
+            ->firstOrFail();
 
         if (!$child) {
             return redirect()->route('user.reservation')->with('error', '子どもの情報がありません。');
