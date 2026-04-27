@@ -31,6 +31,9 @@ use Barryvdh\DomPDF\Facade\Pdf;
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/', function () {
+    return redirect('/login');
+});
 
 Route::get('/admin/login', [AuthController::class, 'showLogin'])->defaults('role', 'admin')->name('admin.login');
 Route::post('/admin/login', [AuthController::class, 'login'])->defaults('role', 'admin');
