@@ -22,22 +22,18 @@ class ReservationController extends Controller
         $displayMonth = Carbon::createFromDate($year, $month, 1);
 
         $today = now()->startOfDay();
-
-        if ($today->day <= 15) {
-            $maxDate = $today->copy()->endOfMonth();
-        } else {
-            $maxDate = $today->copy()->addMonthNoOverflow()->endOfMonth();
-        }
+        $startDate = $today->copy()->addDay();
+        $endDate = $startDate->copy()->addDays(14);
 
         $daysInMonth = $displayMonth->daysInMonth;
-        $dates = [];
+        $dates = [];       
 
         for ($day = 1; $day <= $daysInMonth; $day++) {
             $date = $displayMonth->copy()->day($day);
             $dateString = $date->toDateString();
             $weekday = $date->dayOfWeek;
 
-            if ($date->lt($today) || $date->gt($maxDate) || $weekday === 0 || $weekday === 6) {
+            if ($date->lt($startDate) || $date->gt($endDate) || $weekday === 0 || $weekday === 6) {
                 $dates[$dateString] = [
                     'day' => $day,
                     'canBook' => false,
@@ -101,12 +97,36 @@ class ReservationController extends Controller
             'round_type' => 'required|string',
             'purpose' => 'required|string',
             'note' => 'nullable|string',
+            'meal' => 'nullable',
+            'snack' => 'nullable',
         ]);
+
+        $child_id = session('child_id');
+
+        if (!$child_id) {
+            return back()->with('error', '子どもが選択されていません');
+        }
+
+        $child = Auth::user()->children()
+            ->where('id', $child_id)
+            ->first();
+
+        if (!$child) {
+            return back()->with('error', '不正な子どもです');
+        }
 
         // 時間帯を DB から取得
         $slots = \App\Models\ReservationSlot::whereIn('id', $validated['reservation_slot_ids'])
             ->orderBy('slot_time')
             ->get();
+
+        $exists = \App\Models\Reservation::where('child_id', $child->id)
+            ->whereIn('reservation_slot_id', $request->reservation_slot_ids)
+            ->exists();
+
+        if ($exists) {
+            return back()->with('error', 'この時間帯はすでに予約済みです');
+        }
 
         return view('user.confirm', [
             'date' => $validated['date'],
@@ -126,7 +146,9 @@ class ReservationController extends Controller
         DB::beginTransaction();
 
         try {
-            $child = Child::where('user_id', auth()->user()->id)->first();
+            $child = Auth::user()->children()
+                ->where('id', $request->child_id)
+                ->first();
 
             if (!$child) {
                 DB::rollBack();
@@ -138,7 +160,7 @@ class ReservationController extends Controller
 
                 if (!$slot) {
                     DB::rollBack();
-                    return back()->with('error', 'スロットが存在しません。');
+                    return back()->with('error', 'スロットが存在しません');
                 }
 
                 if ($slot->capacity <= 0) {
@@ -260,37 +282,47 @@ class ReservationController extends Controller
             return back()->with('error', '削除対象の予約がありません。');
         }
 
-        $child = Child::where('user_id', auth()->user()->id)->first();
-        if (!$child) {
-            return back()->with('error', '子どもの情報がありません。');
-        }
+        DB::beginTransaction();
 
-        $reservations = Reservation::whereIn('id', $reservationIds)
-            ->where('child_id', $child->id)
-            ->get();
+        try {
+            // ログインユーザーの子どもID一覧を取得
+            $childIds = auth()->user()->children()->pluck('id');
 
-        if ($reservations->isEmpty()) {
-            return back()->with('error', '該当する予約はありません。');
-        }
+            // 対象の予約を取得（自分の子どものものだけ）
+            $reservations = \App\Models\Reservation::whereIn('id', $reservationIds)
+                ->whereIn('child_id', $childIds)
+                ->get();
 
-        DB::transaction(function() use ($reservations) {
+            if ($reservations->isEmpty()) {
+                DB::rollBack();
+                return back()->with('error', '削除できる予約がありません。');
+            }
+
             foreach ($reservations as $reservation) {
-                $slot = $reservation->slot;
+
+                // スロットの空き数を戻す
+                $slot = \App\Models\ReservationSlot::where('id', $reservation->reservation_slot_id)
+                    ->lockForUpdate()
+                    ->first();
+
                 if ($slot) {
                     $slot->capacity += 1;
                     $slot->save();
                 }
+
+                // 予約削除
                 $reservation->delete();
             }
-        });
 
-        return back()->with('success', '予約をキャンセルしました。');
+            DB::commit();
 
+            return back()->with('success', '予約をキャンセルしました');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'キャンセル処理中にエラーが発生しました');
+        }    
     }
-
-
-
-
 
     //
 }

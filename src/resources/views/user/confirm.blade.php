@@ -31,6 +31,7 @@
     <div>
         <form action="{{ route('user.reservation.store') }}" method="POST">
             @csrf
+            <input type="hidden" name="child_id" value="{{ session('child_id') }}">
             <input type="hidden" name="date" value="{{ $date }}">
             <input type="hidden" name="meal" value="{{ $meal }}">
             <input type="hidden" name="snack" value="{{ $snack }}">

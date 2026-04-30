@@ -30,7 +30,7 @@
 
         <tbody>
         @foreach($histories as $history)
-            <div class="usage-row">
+            <tr class="usage-row">
                 <td>{{ \Carbon\Carbon::parse($history['date'])->format('d') }}</td>
 
                 <td>
@@ -49,7 +49,7 @@
                         {{ number_format($history['fee']) }} 円
                     @endif
                 </td>
-            </div>
+            </tr>
         @endforeach
         </tbody>
     </table>

@@ -9,6 +9,13 @@
     <div class="heading">
         <h2>{{ $date }} の予約枠</h2>
     </div>
+
+    @if(session('error'))
+        <div class="alert alert-success">
+            {{ session('error') }}
+        </div>
+    @endif
+
     <form action="{{ route('user.reservation.confirm') }}" method="POST">
         @csrf
         <input type="hidden" name="date" value="{{ $date }}">
