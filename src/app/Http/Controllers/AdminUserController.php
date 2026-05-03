@@ -123,20 +123,22 @@ class AdminUserController extends Controller
 
     public function update(Request $request, $id)
     {
-        $user = User::with(['children.siblings', 'contacts'])->findOrFail($id);
+        $user = User::with(['children', 'contacts'])->findOrFail($id);
 
         $validated = $request->validate([
             'name' => 'required|string|max:25',
             'password' => 'nullable|string|min:5',
             'address'       => 'nullable|string|max:255',
-            'child_name'    => 'nullable|string|max:100',
-            'birthday'  => 'nullable|date',
-            'gender'  => 'nullable|string|in:男,女',
+            'children' => 'nullable|array',
+            'children.*.id' => 'nullable|integer|exists:children,id',
+
+            'children.*.child_name'    => 'nullable|string|max:100',
+            'children.*.birthday'  => 'nullable|date',
+            'children.*.gender'  => 'nullable|string|in:男,女',
+            'children.*.allergy'  => 'nullable|string|max:250',
             'relationship.*'  => 'nullable|string|max:20',
             'phone_number.*'  => 'nullable|string|max:50',
             'contact_name.*'  => 'nullable|string|max:100',
-            'allergy'  => 'nullable|string|max:250',
-            'sibling_name.*'  => 'nullable|string|max:25',
         ]);
 
         $user->update([
@@ -145,28 +147,36 @@ class AdminUserController extends Controller
         ]);
 
         if (!empty($validated['password'])) {
-            $user->password = bcrypt($validated['password']);
-            $user->save();
+            $user->update([
+                'password' => bcrypt($validated['password']),
+            ]);
         }
 
-        $child = $user->children()->updateOrCreate(
-            ['id' => $validated['child_id'] ?? null],
-            [
-                'user_id'    => $user->id,
-                'child_name' => $validated['child_name'],
-                'birthday'   => $validated['birthday'] ?? null,
-                'allergy'    => $validated['allergy'] ?? null,
-                'gender'     => $validated['gender'] ?? null,
-            ]
-        );
+        if (!empty($validated['children'])) {
 
-        if (!empty($validated['sibling_name'])) {
-            foreach ($validated['sibling_name'] as $siblingName) {
-                if (!empty($siblingName)) {
-                    $child->siblings()->updateOrCreate(
-                        ['child_id' => $child->id, 'sibling_name' => $siblingName],
-                        ['sibling_name' => $siblingName]
-                    );
+            foreach ($validated['children'] as $childData) {
+
+                $updated = false;
+
+                if (!empty($childData['id'])) {
+                    $updated = Child::where('id', $childData['id'])
+                        ->where('user_id', $user->id)
+                        ->update([
+                            'child_name' => $childData['child_name'],
+                            'birthday'   => $childData['birthday'] ?? null,
+                            'allergy'    => $childData['allergy'] ?? null,
+                            'gender'     => $childData['gender'] ?? null,
+                        ]);
+                }
+
+                if (!$updated) {
+                    Child::create([
+                        'user_id'    => $user->id,
+                        'child_name' => $childData['child_name'],
+                        'birthday'   => $childData['birthday'] ?? null,
+                        'allergy'    => $childData['allergy'] ?? null,
+                        'gender'     => $childData['gender'] ?? null,
+                    ]);
                 }
             }
         }

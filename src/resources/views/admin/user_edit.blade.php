@@ -22,7 +22,6 @@
         $old_names = old('contact_name', []);
         $old_relationships = old('relationship', []);
         $old_phones = old('contact_phone', []);
-        $old_sibling_names = old('sibling_name', []);
         @endphp 
         <div class="form-group">
             <label class="blue" for="user_id" style="width: 150px; margin-right: 10px;">ユーザーID:</label>
@@ -68,42 +67,11 @@
             @enderror
         </div>
         <div class="form-group">
-            <label for="child_name" style="width: 150px; margin-right: 10px;">子ども名:</label>
-            <div style="position: relative; flex: 1;">
-                <input type="text" id="child_name" name="child_name" class="form-control editable-input" value="{{ old('child_name', $user->child->child_name ?? '') }}">
-            </div>
-            @error('child_name') 
-            <div class="text-danger"> {{ $message }}</div>
-            @enderror 
-        </div>
-        <div class="form-group">
-            <label for="birthday" style="width: 150px; margin-right: 10px;">生年月日:</label>
-            <div style="position: relative; flex: 1;">
-                <input type="date" id="birthday" name="birthday" class="form-control editable-input" value="{{ old('birthday', $user->child->birthday ?? '') }}" >
-            </div>
-            @error('birthday') 
-            <div class="text-danger"> {{ $message }}</div>
-            @enderror 
-        </div>
-        <div class="form-group">
-            <label for="gender" style="width: 150px; margin-right: 10px;">性別:</label>
-            <div style="position: relative; flex: 1;">
-                <select id="gender" name="gender" class="form-control editable-input" >
-                    <option value="">選択してください</option>
-                    <option value="男" {{ old('gender', $user->child->gender ?? '') == '男' ? 'selected' : '' }}>男</option>
-                    <option value="女" {{ old('gender', $user->child->gender ?? '') == '女' ? 'selected' : '' }}>女</option>
-                </select>
-            </div>
-            @error('gender') 
-            <div class="text-danger"> {{ $message }}</div>
-            @enderror 
-        </div>
-        <div class="form-group">
             <label for="contact_name_1" style="width: 150px; margin-right: 10px;">連絡先名前１:</label>
             <div style="position: relative; flex: 1;">
-                <input type="text" id="contact_name_1" name="contact_name[]" class="form-control editable-input" value="{{ $old_names[0] ?? $user->contacts[0]->name ?? '' }}" >
+                <input type="text" id="contact_name_1" name="contact_name[]" class="form-control editable-input" value="{{ $old_contact_names[0] ?? $user->contacts[0]->contact_name ?? '' }}" >
             </div>
-            @error('address')
+            @error('contact_name.0')
             <div class="text-danger"> {{ $message }}<div>
             @enderror
         </div>
@@ -112,25 +80,25 @@
             <div style="position: relative; flex: 1;">
                 <input type="text" id="relationship_1" name="relationship[]" class="form-control editable-input" value="{{ $old_relationships[0] ?? $user->contacts[0]->relationship ?? '' }}" >
             </div>
-            @error('relationship')
+            @error('relationship.0')
             <div class="text-danger"> {{ $message }}<div>
             @enderror
         </div>
         <div class="form-group">
             <label for="phone_number_1" style="width: 150px; margin-right: 10px;">連絡先電話１:</label>
             <div style="position: relative; flex: 1;">
-                <input type="text" id="phone_number_1" name="phone_number[]" class="form-control editable-input" value="{{ $old_phones[0] ?? $user->contacts[0]->phone ?? '' }}">
+                <input type="text" id="phone_number_1" name="phone_number[]" class="form-control editable-input" value="{{ $old_phone_numbers[0] ?? $user->contacts[0]->phone_number ?? '' }}">
             </div>
-            @error('phone_number') 
+            @error('phone_number.0') 
             <div class="text-danger"> {{ $message }}<div>
             @enderror 
         </div>
         <div class="form-group">
             <label for="contact_name_2" style="width: 150px; margin-right: 10px;">連絡先名前2:</label>
             <div style="position: relative; flex: 1;">
-                <input type="text" id="contact_name_2" name="contact_name[]" class="form-control editable-input" value="{{ $old_names[1] ?? $user->contacts[1]->name ?? '' }}" >
+                <input type="text" id="contact_name_2" name="contact_name[]" class="form-control editable-input" value="{{ $old_contact_names[1] ?? $user->contacts[1]->contact_name ?? '' }}" >
             </div>
-            @error('contact_name') 
+            @error('contact_name.1') 
             <div class="text-danger"> {{ $message }}<div>
             @enderror 
         </div>
@@ -139,45 +107,76 @@
             <div style="position: relative; flex: 1;">
                 <input type="text" id="relationship_2" name="relationship[]" class="form-control editable-input" value="{{ $old_relationships[1] ?? $user->contacts[1]->relationship ?? '' }}" >
             </div>
-            @error('relationship')
+            @error('relationship.1')
             <div class="text-danger"> {{ $message }}<div>
             @enderror
         </div>
         <div class="form-group">
             <label for="phone_number_2" style="width: 150px; margin-right: 10px;">連絡先電話２:</label>
             <div style="position: relative; flex: 1;">
-                <input type="text" id="phone_number_2" name="phone_number[]" class="form-control editable-input" value="{{ $old_phones[1] ?? $user->contacts[1]->phone ?? '' }}" >
+                <input type="text" id="phone_number_2" name="phone_number[]" class="form-control editable-input" value="{{ $old_phone_numbers[1] ?? $user->contacts[1]->phone_number ?? '' }}" >
             </div>
-            @error('phone_number') 
+            @error('phone_number.1') 
             <div class="text-danger"> {{ $message }}<div>
             @enderror
-        </div> 
-        <div class="form-group">
-            <label for="allergy" style="width: 150px; margin-right: 10px;">アレルギーその他:</label>
-            <div style="position: relative; flex: 1;">
-                <input type="text" id="allergy" name="allergy" class="form-control editable-input" value="{{ old('allergy',$user->child->allergy ?? '') }}">
-            </div>
         </div>
-        <div class="form-group">
-            <label for="sibling_name_1" style="width: 150px; margin-right: 10px;">兄弟姉妹名(未就学)1:</label>
-            <div style="position: relative; flex: 1;">
-                <input type="text" id="sibling_name_1" name="sibling_name[]" class="form-control editable-input" value="{{ $old_sibling_names[0] ?? $user->child->siblings[0]->sibling_name ?? '' }}" >
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="sibling_name_2" style="width: 150px; margin-right: 10px;">兄弟姉妹名(未就学)2:</label>
-            <div style="position: relative; flex: 1;">
-                <input type="text" id="sibling_name_2" name="sibling_name[]" class="form-control editable-input" value="{{ $old_sibling_names[1] ?? $user->child->siblings[1]->sibling_name ?? '' }}" >
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="sibling_name_3" style="width: 150px; margin-right: 10px;">兄弟姉妹名(未就学)3:</label>
-            <div style="position: relative; flex: 1;">
-                <input type="text" id="sibling_name_3" name="sibling_name[]" class="form-control editable-input" value="{{ $old_sibling_names[2] ?? $user->child->siblings[2]->sibling_name ?? '' }}" >
-            </div>
-        </div>
+        @php
+            $children = old('children', $user->children->toArray());
+        @endphp
 
-        <button type="submit" class="btn">登録</button>
+        @foreach($children as $i => $child)
+        <div class="child-block">
+
+            <div class="form-group">
+                <label>子ども名{{ $i + 1 }}</label>
+                <input type="hidden"
+                    name="children[{{ $i }}][id]"
+                    value="{{ old("children.$i.id", $child['id'] ?? '') }}">
+
+                <input type="text"
+                    name="children[{{ $i }}][child_name]"
+                    class="form-control"
+                    value="{{ old("children.$i.child_name", $child['child_name'] ?? '') }}">
+                @error("children.$i.child_name")
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="form-group">
+                <label>生年月日{{ $i + 1 }}</label>
+                <input type="date"
+                    name="children[{{ $i }}][birthday]"
+                    class="form-control"
+                    value="{{ old("children.$i.birthday", isset($child['birthday']) ? \Carbon\Carbon::parse($child['birthday'])->format('Y-m-d') : '') }}">
+                @error("children.$i.birthday")
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="form-group">
+                <label>性別{{ $i + 1 }}</label>
+                <select name="children[{{ $i }}][gender]" class="form-control">
+                    <option value="">選択</option>
+                    <option value="男" {{ old("children.$i.gender", $child['gender'] ?? '') == '男' ? 'selected' : '' }}>男</option>
+                    <option value="女" {{ old("children.$i.gender", $child['gender'] ?? '') == '女' ? 'selected' : '' }}>女</option>
+                </select>
+                @error("children.$i.gender")
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="form-group">
+                <label>アレルギー</label>
+                <input type="text"
+                    name="children[{{ $i }}][allergy]"
+                    class="form-control"
+                    value="{{ $child['allergy'] ?? '' }}">
+            </div>
+
+        </div>
+        @endforeach 
+
+        <button type="submit" class="btn">修正</button>
     </form>
     <div class="back__button">
         <a class="back" href="{{ route('admin.user') }}">back</a>
