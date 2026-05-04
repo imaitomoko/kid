@@ -62,7 +62,6 @@
                     <option value="">選択してください</option>
                     <option value="user" {{ old('role') == 'user' ? 'selected' : '' }}>user</option>
                     <option value="teacher" {{ old('role') == 'teacher' ? 'selected' : '' }}>teacher</option>
-                    <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>admin</option>
                 </select>
             </div>
             @error('role') 
@@ -144,7 +143,7 @@
         <div class="form-group">
             <label for="birthday" style="width: 150px; margin-right: 10px;">生年月日1:</label>
             <div style="position: relative; flex: 1;">
-                <input type="date" id="birthday" name="birthday[]" class="form-control" value="{{ $old_birthday[0] ?? '' }}" >
+                <input type="date" id="birthday" name="birthday[]" class="form-control" value="{{ $old_birthdays[0] ?? '' }}" >
             </div>
             @error('birthday.0') 
             <div class="text-danger"> {{ $message }}</div>
@@ -181,7 +180,7 @@
         <div class="form-group">
             <label for="birthday" style="width: 150px; margin-right: 10px;">生年月日2:</label>
             <div style="position: relative; flex: 1;">
-                <input type="date" id="birthday" name="birthday[]" class="form-control" value="{{ $old_birthday[1] ?? '' }}" >
+                <input type="date" id="birthday" name="birthday[]" class="form-control" value="{{ $old_birthdays[1] ?? '' }}" >
             </div>
             @error('birthday.1') 
             <div class="text-danger"> {{ $message }}</div>
@@ -203,7 +202,7 @@
         <div class="form-group">
             <label for="allergy" style="width: 150px; margin-right: 10px;">アレルギーその他2:</label>
             <div style="position: relative; flex: 1;">
-                <input type="text" id="allergy" name="allergy[]" class="form-control" value="{{ $old_allergy[1] ?? '' }}">
+                <input type="text" id="allergy" name="allergy[]" class="form-control" value="{{ $old_allergys[1] ?? '' }}">
             </div>
         </div>
         <div class="form-group">
@@ -218,7 +217,7 @@
         <div class="form-group">
             <label for="birthday" style="width: 150px; margin-right: 10px;">生年月日3:</label>
             <div style="position: relative; flex: 1;">
-                <input type="date" id="birthday" name="birthday[]" class="form-control" value="{{ $old_birthday[2] ?? '' }}" >
+                <input type="date" id="birthday" name="birthday[]" class="form-control" value="{{ $old_birthdays[2] ?? '' }}" >
             </div>
             @error('birthday.2') 
             <div class="text-danger"> {{ $message }}</div>
@@ -240,7 +239,7 @@
         <div class="form-group">
             <label for="allergy" style="width: 150px; margin-right: 10px;">アレルギーその他3:</label>
             <div style="position: relative; flex: 1;">
-                <input type="text" id="allergy" name="allergy[]" class="form-control" value="{{ $old_allergy[2] ?? '' }}">
+                <input type="text" id="allergy" name="allergy[]" class="form-control" value="{{ $old_allergys[2] ?? '' }}">
             </div>
         </div>
         <button type="submit" class="btn">登録</button>

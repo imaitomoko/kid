@@ -27,15 +27,15 @@ class AdminUserController extends Controller
             'user_id' => 'required|unique:users,user_id',
             'name' => 'required|string|max:25',
             'password' => 'required|string|min:5',
-            'role'          => 'required|in:user,teacher,admin',
+            'role'          => 'required|in:user,teacher',
             'address'       => 'nullable|string|max:255',
-            'child_name'    => 'nullable|string|max:100',
-            'birthday'  => 'nullable|date',
-            'gender'  => 'nullable|string|in:男,女',
+            'child_name.*'    => 'nullable|string|max:100',
+            'birthday.*'  => 'nullable|date',
+            'gender.*'  => 'nullable|string|in:男,女',
+            'allergy.*'  => 'nullable|string|max:250',
             'relationship.*'  => 'nullable|string|max:20',
             'phone_number.*'  => 'nullable|string|max:50',
             'contact_name.*'  => 'nullable|string|max:100',
-            'allergy'  => 'nullable|string|max:250',
             'sibling_name.*'  => 'nullable|string|max:25',
         ]);
 
@@ -48,12 +48,16 @@ class AdminUserController extends Controller
         ]);
 
         if (!empty($validated['child_name'])) {
-            $child = $user->children()->create([
-                'child_name' => $validated['child_name'],
-                'birthday' => $validated['birthday'] ?? null,
-                'allergy' => $validated['allergy'] ?? null,
-                'gender' => $validated['gender'] ?? null,
-            ]);
+            foreach ($validated['child_name'] as $i => $name) {
+                if (!empty($name)) {
+                    $child = $user->children()->create([
+                        'child_name' => $name,
+                        'birthday' => $validated['birthday'][$i] ?? null,
+                        'gender' => $validated['gender'][$i] ?? null,
+                        'allergy' => $validated['allergy'][$i] ?? null,
+                    ]);
+                }
+            }
         }
 
         if ($request->has('relationship')) {
@@ -68,7 +72,7 @@ class AdminUserController extends Controller
             }
         }
 
-        if ($request->has('sibling_name')) {
+        if (isset($child) && $request->has('sibling_name')) {
             foreach ($request->sibling_name as $sibling) {
                 if (!empty($sibling)) {
                     $child->siblings()->create([
@@ -83,14 +87,14 @@ class AdminUserController extends Controller
 
     public function search(Request $request)
     {
-        $roles = ['admin', 'teacher', 'user'];
+        $roles = ['teacher', 'user'];
 
         return view('admin.user_list', compact('roles'));
     }
 
     public function show(Request $request)
     {
-        $roles = ['admin', 'teacher', 'user'];
+        $roles = ['teacher', 'user'];
 
         $request->validate([
             'role' => 'required|string', // 役割は必須
