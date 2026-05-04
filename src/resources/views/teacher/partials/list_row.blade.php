@@ -10,7 +10,10 @@
 <tr>
     <td>
         <a href="{{ route('teacher.attendance.detail', $reservation->id) . '?' . $query }}">
-            {{ $isNonmember ? $reservation->child_name : $reservation->child->child_name }}
+            @if($isNonmember && optional($attendance->reservable)->is_under_3 == 2)
+                <span style="color:red; font-weight:bold;">(誰通)</span>
+            @endif
+            {{ $isNonmember ? $reservation->child_name : optional($reservation->child)->child_name }}
         </a>
     </td>
 

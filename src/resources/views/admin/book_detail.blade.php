@@ -85,7 +85,7 @@
         </tr>
     </table>
     <div class="back__button">
-        <a class="back" href="{{ route('book.list') }}">back</a>
+        <a class="back" href="{{ route('book.list', ['date' => $date]) }}">back</a>
     </div>
 </div>
 @endsection

@@ -91,7 +91,7 @@
         </tr>
     </table>
     <div class="back__button">
-        <a class="back" href="{{ route('teacher.reservation.list') }}">back</a>
+        <a class="back" href="{{ route('teacher.reservation.list', ['date' => $date]) }}">back</a>
     </div>
 </div>
 @endsection
