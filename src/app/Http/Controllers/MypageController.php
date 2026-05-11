@@ -127,8 +127,7 @@ class MypageController extends Controller
             'child_name.required' => 'お子様の名前を入力してください。',
             'birthday.required' => '生年月日を入力してください。',
             'gender.required' => '性別を選択してください。',
-        ]    
-    );
+        ]);
 
         $user = Auth::user();
 
@@ -137,6 +136,10 @@ class MypageController extends Controller
             'birthday'   => $validated['birthday'],
             'gender'     => $validated['gender'],
             'allergy'    => $validated['allergy'] ?? null,
+        ]);
+
+        $user->update([
+            'delete_at_target' => now()->addYears(5),
         ]);
 
         if ($request->has('sibling_name')) {

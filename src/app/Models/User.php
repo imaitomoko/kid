@@ -24,6 +24,7 @@ class User extends Authenticatable
         'password',
         'role',
         'address',
+        'delete_at_target',
     ];
 
     /**
@@ -83,5 +84,15 @@ class User extends Authenticatable
             }
         }
         return true;
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($user) {
+
+            $user->children()->delete();
+        });
     }
 }
