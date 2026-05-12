@@ -7,7 +7,7 @@
 @section('content')
 <div class="content">
     <div class="heading">
-        <h2>集計表</h2>
+        <h2>一時預かり集計表</h2>
     </div>
     <div class="mb-3">
         <a href="{{ route('admin.summary', ['month' => $month->copy()->subMonth()->toDateString()]) }}" class="before">&laquo; 前月</a>
@@ -75,9 +75,16 @@
         <strong>開所日数：{{ $totalDays }} 日</strong>
     </div>
 
-    <div class="pdf">
-        <a class="btn-pdf" href="{{ url('admin/summary/pdf') }}?month={{ $month->toDateString() }}">PDF印刷</a>
+    <div class="index">
+        <div class="pdf">
+            <a class="btn-pdf" href="{{ url('admin/summary/pdf') }}?month={{ $month->toDateString() }}">PDF印刷</a>
+        </div>
+        <div class="anyone">
+            <a class="btn-anyone" href="{{ url('admin/summary/anyone') }}?month={{ $month->toDateString() }}">誰でも通園集計表</a>
+        </div>
     </div>
+
+    
 
     <div class="back__button">
         <a class="back" href="{{ route('admin') }}">back</a>

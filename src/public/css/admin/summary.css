@@ -84,7 +84,12 @@ h2 {
     padding: 8px 12px;
 }
 
-
+.index {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 20px 0;
+}
 
 .pdf {
     text-align: center;
@@ -105,6 +110,23 @@ h2 {
 
 .btn-pdf:hover {
     background-color: #3b8d4c;
+    color: #fff;
+}
+
+.btn-anyone {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 6px 14px;
+    background-color: #315ae3;
+    border: none;
+    color: #fff;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.btn-anyone:hover {
+    background-color: #5bb9e1;
     color: #fff;
 }
 

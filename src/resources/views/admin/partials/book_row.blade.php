@@ -7,7 +7,7 @@
 <tr>
     <td>
         <a href="{{ route('admin.book_detail', ['id' => $reservation->id, 'isNonmember' => $isNonmember ? 1 : 0, 'date' => $date->format('Y-m-d')]) }}">
-            @if($isNonmember && optional($attendance->reservable)->is_under_3 == 2)
+            @if($isNonmember && $attendance?->reservable?->is_under_3 == 2)
                 <span style="color:red; font-weight:bold;">(誰通)</span>
             @endif
             {{ $isNonmember ? $reservation->child_name : optional($reservation->child)->child_name }}

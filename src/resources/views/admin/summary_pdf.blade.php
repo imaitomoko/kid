@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>保育料集計表</title>
+    <title>一時預かり集計表</title>
     <style>
         
         body, h3, th, td, tfoot {
@@ -57,7 +57,7 @@
     </style>
 </head>
 <body>
-    <h3>{{ $month->format('Y年m月') }} 保育料集計表</h3>
+    <h3>{{ $month->format('Y年m月') }} 一時預かり集計表</h3>
 
     <table>
         <thead>

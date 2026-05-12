@@ -128,8 +128,9 @@
                                     </td>
                                     <td>
                                         <select name="unit" class="form-select">
-                                            <option value="時間" {{ $item->unit == '時間' ? 'selected' : '' }}>時間</option>
-                                            <option value="1回" {{ $item->unit == '1回' ? 'selected' : '' }}>1回</option>
+                                            <option value="1時間単位" {{ $item->unit == '1時間単位' ? 'selected' : '' }}>1時間単位</option>
+                                            <option value="30分単位" {{ $item->unit == '30分単位' ? 'selected' : '' }}>30分単位</option>
+                                            <option value="1回単位" {{ $item->unit == '1回単位' ? 'selected' : '' }}>1回単位</option>
                                         </select>
                                     </td>
                                     <td>

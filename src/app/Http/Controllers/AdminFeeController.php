@@ -19,7 +19,7 @@ class AdminFeeController extends Controller
         $validated = $request->validate([
             'item_name'        => 'required|string|max:255',
             'category'    => 'required|string',
-            'unit'        => 'required|string',
+            'unit' => 'required|string|in:1時間単位,30分単位,1回単位',
             'amount'       => 'required|integer|min:0',
             'start_date'  => 'required|date',
             'end_date'    => 'nullable|date|after_or_equal:start_date',
@@ -39,7 +39,7 @@ class AdminFeeController extends Controller
         $validated = $request->validate([
             'item_name'   => 'required|string|max:255',
             'category'    => 'required|string',
-            'unit'        => 'required|string',
+            'unit' => 'required|string|in:1時間単位,30分単位,1回単位',
             'amount'      => 'required|integer|min:0',
             'start_date'  => 'required|date',
             'end_date'    => 'nullable|date|after_or_equal:start_date',
