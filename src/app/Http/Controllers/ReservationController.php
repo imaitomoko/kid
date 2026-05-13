@@ -22,8 +22,8 @@ class ReservationController extends Controller
         $displayMonth = Carbon::createFromDate($year, $month, 1);
 
         $today = now()->startOfDay();
-        $startDate = $today->copy()->addDay();
-        $endDate = $startDate->copy()->addDays(14);
+        $startDate = $today->copy()->addDays(2);
+        $endDate = $startDate->copy()->addDays(13);
 
         $daysInMonth = $displayMonth->daysInMonth;
         $dates = [];       
