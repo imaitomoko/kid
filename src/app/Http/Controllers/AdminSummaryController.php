@@ -56,7 +56,7 @@ class AdminSummaryController extends Controller
                 if ($type === \App\Models\NonmemberReservation::class) {
                     // 非会員予約は dateValue.date を直接
                     $q->where('purpose', '!=', 'ママ')
-                        ->where('is_under_3', '!=', 2)
+                        ->whereIn('is_under_3', [0, 1])
                         ->whereHas('dateValue', function ($q3) use ($startOfMonth, $endOfMonth) {
                             $q3->whereBetween('date', [
                                 $startOfMonth->toDateString(),
@@ -248,7 +248,7 @@ class AdminSummaryController extends Controller
             ->whereHasMorph('reservable', [\App\Models\NonmemberReservation::class
                 ], 
                 function ($q) use ($startOfMonth, $endOfMonth) {
-                    $q->where('is_under_3', 2);
+                    $q->whereIn('is_under_3', [2, 3, 4]);
                 
                     $q->whereHas('dateValue', function ($q2) use ($startOfMonth, $endOfMonth) {
                         $q2->whereBetween('date', [
@@ -320,7 +320,13 @@ class AdminSummaryController extends Controller
                 $unit = $feeItem->unit ?? '1回'; // 'hour' or 'once'
                 $amount = $feeItem->amount ?? 0;
 
-                $isCareCategory = in_array($category, ['未満児保育', '以上児保育','誰でも通園']);
+                $isCareCategory = in_array($category, [
+                    '未満児保育', 
+                    '以上児保育',
+                    '誰でも通園',
+                    '誰でも通園減免',
+                    '誰でも通園無償',
+                ]);
 
                 if ($isCareCategory) {
 
@@ -335,6 +341,8 @@ class AdminSummaryController extends Controller
                     case '未満児保育':
                     case '以上児保育':
                     case '誰でも通園':
+                    case '誰でも通園減免':
+                    case '誰でも通園無償':
                         if (!$careAdded) {
                             $summary[$dateStr]['careFee'] += $calcAmount;
                             $careAdded = true;

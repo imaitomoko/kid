@@ -23,6 +23,8 @@ class AdminListController extends Controller
        // 非会員
         if ($attendance->reservable_type === NonmemberReservation::class) {
             return match ((int)$attendance->reservable->is_under_3) {
+                4 => '誰でも通園無償',
+                3 => '誰でも通園減免',
                 2 => '誰でも通園',
                 1 => '未満児保育',
                 default => '以上児保育',

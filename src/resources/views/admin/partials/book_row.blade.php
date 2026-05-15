@@ -7,8 +7,20 @@
 <tr>
     <td>
         <a href="{{ route('admin.book_detail', ['id' => $reservation->id, 'isNonmember' => $isNonmember ? 1 : 0, 'date' => $date->format('Y-m-d')]) }}">
-            @if($isNonmember && $attendance?->reservable?->is_under_3 == 2)
-                <span style="color:red; font-weight:bold;">(誰通)</span>
+            @if($isNonmember)
+                @php
+                    $labels = [
+                        2 => '誰通',
+                        3 => '誰通減',
+                        4 => '誰通無',
+                    ];
+                @endphp
+
+                @if(isset($labels[$reservation->is_under_3]))
+                    <span style="color:red; font-weight:bold;">
+                        ({{ $labels[$reservation->is_under_3] }})
+                    </span>
+                @endif
             @endif
             {{ $isNonmember ? $reservation->child_name : optional($reservation->child)->child_name }}
         </a>

@@ -144,7 +144,7 @@ class AdminHistoryController extends Controller
         $term = $request->input('term');
 
         // 誰でも通園のみ取得
-        $names = \App\Models\NonmemberReservation::where('is_under_3', 2)
+        $names = \App\Models\NonmemberReservation::whereIn('is_under_3', [2, 3, 4])
             ->where('child_name', 'like', "%{$term}%")
             ->pluck('child_name');
 
@@ -188,7 +188,7 @@ class AdminHistoryController extends Controller
             $q2->whereBetween('date', [$startOfMonth, $endOfMonth])
         );
         // 誰でも通園
-        $q->where('is_under_3', 2);
+        $q->whereIn('is_under_3', [2, 3, 4]);
         // 子ども名（入力時のみ）
         if ($childName) {
             $q->where('child_name', 'like', "%{$childName}%");
@@ -205,7 +205,7 @@ class AdminHistoryController extends Controller
             $feeItems = $attendance->feeItems;
 
             $nurseryAmount = $feeItems
-                ->filter(fn($f) => $f->feeItem && in_array($f->feeItem->category, ['未満児 保育', '以上児保育', '誰でも通園']))
+                ->filter(fn($f) => $f->feeItem && in_array($f->feeItem->category, ['未満児保育', '以上児保育', '誰でも通園','誰でも通園減免','誰でも通園無償',]))
                 ->sum('amount');
 
             $mealAmount = $feeItems

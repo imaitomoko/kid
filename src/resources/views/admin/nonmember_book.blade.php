@@ -45,6 +45,8 @@
             <label class="form-label">年齢区分</label>
             <select name="is_under_3" class="form-select" required>
                 <option value="2">誰でも通園</option>
+                <option value="3">誰でも通園減免</option>
+                <option value="4">誰でも通園無償</option>
                 <option value="1">3歳未満児</option>
                 <option value="0">3歳以上児</option>
             </select>

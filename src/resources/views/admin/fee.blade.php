@@ -40,6 +40,8 @@
                             <option value="給食">給食</option>
                             <option value="おやつ">おやつ</option>
                             <option value="誰でも通園">誰でも通園</option>
+                            <option value="誰でも通園減免">誰でも通園減免</option>
+                            <option value="誰でも通園無償">誰でも通園無償</option>
                         </select>
                         @error('category') 
                             <div class="text-danger"> {{ $message}}</div>
@@ -50,8 +52,9 @@
                         <label class="form-label">単位</label>
                         <select name="unit" class="form-select" required>
                             <option value="">選択してください</option>
-                            <option value="時間">時間</option>
-                            <option value="1回">1回</option>
+                            <option value="1時間単位">1時間単位</option>
+                            <option value="30分単位">30分単位</option>
+                            <option value="1回単位">1回単位</option>
                         </select>
                         @error('unit') 
                             <div class="text-danger"> {{ $message}}</div>
@@ -124,6 +127,8 @@
                                             <option value="給食" {{ $item->category == '給食' ? 'selected' : '' }}>給食</option>
                                             <option value="おやつ" {{ $item->category == 'おやつ' ? 'selected' : '' }}>おやつ</option>
                                             <option value="誰でも通園" {{ $item->category == '誰でも通園' ? 'selected' : '' }}>誰でも通園</option>
+                                            <option value="誰でも通園減免" {{ $item->category == '誰でも通園減免' ? 'selected' : '' }}>誰でも通園減免</option>
+                                            <option value="誰でも通園無償" {{ $item->category == '誰でも通園無償' ? 'selected' : '' }}>誰でも通園無償</option>
                                         </select>
                                     </td>
                                     <td>
