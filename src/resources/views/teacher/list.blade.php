@@ -9,6 +9,13 @@
     <div class="heading">
         <h2>本日の予約一覧</h2>
     </div>
+
+    @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+    
     <div class="mb-3">
         <a href="{{ route('teacher.reservation.list', ['date' => $date->copy()->subDay()->toDateString()]) }}" class="before">&laquo; 前日</a>
         <span class="date">{{ $date->format('Y年m月d日') }}</span>
@@ -24,6 +31,7 @@
                 <th>食事</th>
                 <th>アレルギー</th>
                 <th>利用料</th>
+                <th>会計</th>
             </tr>
         </thead>
         <tbody>

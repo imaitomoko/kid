@@ -52,7 +52,7 @@ h2 {
 
 .table th,
 .table td {
-    padding: 12px 16px;
+    padding: 8px 12px;
     text-align: center;
     border-bottom: 1px solid #ddd;
     font-size: 15px;
@@ -65,6 +65,34 @@ h2 {
 
 .table tbody tr:nth-child(even) td {
     background: #f5f8ff !important;
+}
+
+.time-form-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: nowrap;
+}
+
+.time-form {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+}
+
+.time-form input,
+.time-form select, {
+    width: 85px;
+    min-width: 0;
+}
+
+.time-form button {
+    width: auto;
+    flex-shrink: 0;
+    white-space: nowrap;
 }
 
 /* ボタン共通 */
@@ -131,6 +159,18 @@ label {
     color: #333;
 }
 
+.account-status {
+    font-weight: bold;
+}
+
+.account-status.done {
+    color: #007bff;
+}
+
+.account-status.not-yet {
+    color: #dc3545;
+}
+
 .back__button {
     text-align: center;
     width: 100px;
@@ -147,4 +187,62 @@ label {
 .back {
     color: #fff;
     text-decoration: none;
+}
+
+@media screen and (max-width: 1024px) {
+
+    .table th,
+    .table td {
+        padding: 4px 2px;
+        font-size: 12px;
+    }
+
+    .time-form-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        flex-wrap: nowrap;
+    }
+
+    .time-form {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        width: max-content;
+    }
+
+    .time-form input,
+    .time-form select {
+        width: 85px;
+        min-width: 0;
+    }
+    
+    .time-form button {
+        width: auto;
+        flex-shrink: 0;
+        white-space: nowrap;
+    }
+
+    .input-group {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        align-items: center;
+    }
+
+    .input-group input[type="time"] {
+        width: 82px;
+        min-width: 0;
+    }
+    .input-group .btn {
+        flex-shrink: 0;
+        white-space: nowrap;
+    }
+
+    .btn {
+        padding: 3px 6px;
+        font-size: 12px;
+    }
 }

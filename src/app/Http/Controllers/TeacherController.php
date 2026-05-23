@@ -393,6 +393,13 @@ class TeacherController extends Controller
             return back()->with('error', 'データが存在しません。');
         }
 
+        if (
+            $attendance->actual_end_time &&
+            $request->actual_start_time > $attendance->actual_end_time
+        ) {
+            return back()->with('error', '開始時間は終了時間より後にできません');
+        }
+
         $attendance->actual_start_time = $request->actual_start_time;
         $attendance->save();
 
