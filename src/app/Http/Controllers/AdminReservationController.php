@@ -81,8 +81,7 @@ class AdminReservationController extends Controller
     {
         $childId = $request->input('child_id');   // 会員予約キャンセル用
         $date    = $request->input('date');       // 会員・非会員共通
-        $startTime = $request->input('start_time'); // 非会員キャンセル用
-        $endTime   = $request->input('end_time');   // 非会員キャンセル用
+        $reservationId = $request->input('reservation_id');
 
         $deleted = false;
 
@@ -101,14 +100,14 @@ class AdminReservationController extends Controller
             $deleted = true;
         }
 
-        // 非会員予約キャンセル（date_value_id + start/end_timeで絞る）
-        if (!$childId && $startTime && $endTime) {
-            $count = NonmemberReservation::whereHas('dateValue', fn($q) => $q->whereDate('date', $date))
-                ->where('start_time', $startTime)
-                ->where('end_time', $endTime)
-                ->delete();
+        // 非会員予約キャンセル
+        if ($reservationId) {
+            $reservation = NonmemberReservation::find($reservationId);
 
-            if ($count > 0) $deleted = true;
+            if ($reservation) {
+                $reservation->delete();
+                $deleted = true;
+            }
         }
 
         return $deleted

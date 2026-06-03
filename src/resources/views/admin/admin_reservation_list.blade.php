@@ -46,9 +46,7 @@
                     <form action="{{ route('admin.reservation.cancel') }}" method="POST">
                         @csrf
                         @method('DELETE')
-                        <input type="hidden" name="date" value="{{ $date }}">
-                        <input type="hidden" name="start_time" value="{{ $r['start_time'] }}">
-                        <input type="hidden" name="end_time" value="{{ $r['end_time'] }}">
+                        <input type="hidden" name="reservation_id" value="{{ $r['id'] }}">
                         <button type="submit" class="btn btn-danger btn-sm">キャンセル</button>
                     </form>
                     @endif

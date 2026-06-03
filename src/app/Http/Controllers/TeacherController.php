@@ -608,12 +608,18 @@ class TeacherController extends Controller
 
     public function detail($id, Request $request)
     {
-        
         $isNonmember = $request->input('isNonmember');
         $date = $request->input('date');
 
         if ($isNonmember) {
             $reservation = NonmemberReservation::findOrFail($id);
+            $typeName = match ($reservation->is_under_3) {
+                4 => '誰でも通園無償',
+                3 => '誰でも通園減免',
+                2 => '誰でも通園',
+                1 => '３歳未満児',
+                default => '3歳以上児',
+            };
         } else {
             $reservation = Reservation::with([
                 'child',
@@ -623,7 +629,7 @@ class TeacherController extends Controller
             ])->findOrFail($id);
         }
 
-        return view('teacher.detail', compact('reservation', 'isNonmember', 'date'));
+        return view('teacher.detail', compact('reservation', 'isNonmember', 'date','typeName'));
     }
 
     //

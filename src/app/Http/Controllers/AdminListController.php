@@ -651,6 +651,13 @@ class AdminListController extends Controller
 
         if ($isNonmember) {
             $reservation = NonmemberReservation::findOrFail($id);
+            $typeName = match ($reservation->is_under_3) {
+                4 => '誰でも通園無償',
+                3 => '誰でも通園減免',
+                2 => '誰でも通園',
+                1 => '３歳未満児',
+                default => '3歳以上児',
+            };
         } else {
             $reservation = Reservation::with([
                 'child',
@@ -660,7 +667,7 @@ class AdminListController extends Controller
             ])->findOrFail($id);
         }
 
-        return view('admin.book_detail', compact('reservation', 'isNonmember', 'date'));
+        return view('admin.book_detail', compact('reservation', 'isNonmember', 'date','typeName'));
     }
 
     //

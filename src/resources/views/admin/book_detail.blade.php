@@ -17,6 +17,10 @@
 
     <table class="table table-bordered">
         <tr>
+            <th>年齢区分:</th>
+            <td>{{ $typeName }}</td>
+        </tr>
+        <tr>
             <th>利用回数:</th>
             <td>{{ $reservation->round_type ?? '―' }}</td>
         </tr>
@@ -81,7 +85,7 @@
         </tr>
         <tr>
             <th>備考:</th>
-            <td>{{ $reservation->notes ?? '' }}</td>
+            <td>{{ $reservation->note ?? '' }}</td>
         </tr>
     </table>
     <div class="back__button">
