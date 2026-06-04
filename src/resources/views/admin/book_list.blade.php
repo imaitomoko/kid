@@ -35,12 +35,11 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($reservations as $reservation)
-                @include('admin.partials.book_row', ['reservation' => $reservation, 'isNonmember' => false])
-            @endforeach
-
-            @foreach($nonmemberReservations as $reservation)
-                @include('admin.partials.book_row', ['reservation' => $reservation, 'isNonmember' => true])
+            @foreach($allReservations as $reservation)
+                @include('admin.partials.book_row', [
+                    'reservation' => $reservation,
+                    'isNonmember' => $reservation->isNonmember
+                ])
             @endforeach
         </tbody>
     </table>

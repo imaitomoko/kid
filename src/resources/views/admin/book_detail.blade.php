@@ -18,7 +18,7 @@
     <table class="table table-bordered">
         <tr>
             <th>年齢区分:</th>
-            <td>{{ $typeName }}</td>
+            <td>{{ $typeName ?? '' }}</td>
         </tr>
         <tr>
             <th>利用回数:</th>
@@ -60,7 +60,9 @@
         </tr>
         <tr>
             <th>生年月日:</th>
-            <td>{{ $isNonmember ? ($reservation->birthday ?? '') : ($reservation->child->birthday ?? ' ') }}</td>
+            <td>{{ $isNonmember ? ($reservation->birthday ?? '') : (\Carbon\Carbon::parse($reservation->child->birthday)->format('Y年m月d日'))
+            }}
+            </td>
         </tr>
         
         <tr>

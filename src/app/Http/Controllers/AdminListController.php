@@ -69,6 +69,7 @@ class AdminListController extends Controller
 
          /** ---- 保育料 ---- */
         $minutes = $start->diffInMinutes($end);
+
         $category = $this->decideBasicCategory($attendance);
 
         if ($category) {
@@ -216,8 +217,34 @@ class AdminListController extends Controller
             ($r->attendance && $r->attendance->accounted) ? $r->attendance->total_fee : 0)
             + $nonmemberReservations->sum(fn($r) =>
             ($r->attendance && $r->attendance->accounted) ? $r->attendance->total_fee : 0);
+        
+        
+        $allReservations = collect();
 
-        return view('admin.book_list', compact('reservations', 'nonmemberReservations', 'totalFee', 'accountedTotal', 'individualFees', 'date'));
+        foreach ($reservations as $reservation) {
+            $reservation->isNonmember = false;
+
+            // merged_times の最初の開始時刻を使用
+            $reservation->sort_time =
+                $reservation->merged_times[0]['start'] ?? '00:00';
+
+            $allReservations->push($reservation);
+        }
+
+        foreach ($nonmemberReservations as $reservation) {
+            $reservation->isNonmember = true;
+
+            $reservation->sort_time =
+                Carbon::parse($reservation->start_time)->format('H:i');
+
+            $allReservations->push($reservation);
+        }
+
+        $allReservations = $allReservations
+            ->sortBy('sort_time')
+            ->values();
+
+        return view('admin.book_list', compact('allReservations', 'totalFee', 'accountedTotal', 'individualFees', 'date'));
     }
 
     private function ensureAttendance($reservation)
@@ -648,6 +675,7 @@ class AdminListController extends Controller
     {
         $isNonmember = $request->input('isNonmember');
         $date = $request->input('date');
+        $typeName = null;
 
         if ($isNonmember) {
             $reservation = NonmemberReservation::findOrFail($id);

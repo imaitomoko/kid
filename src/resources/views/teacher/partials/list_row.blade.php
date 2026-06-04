@@ -11,9 +11,14 @@
 <tr>
     <td>
         <a href="{{ route('teacher.attendance.detail', $reservation->id) . '?' . $query }}">
-            @if($isNonmember && optional($attendance->reservable)->is_under_3 == 2)
+            @if($isNonmember && in_array(optional(optional($attendance)->reservable)->is_under_3, [2, 3, 4]))
                 <span style="color:red; font-weight:bold;">(誰通)</span>
             @endif
+
+            @if(optional($reservation)->purpose === 'ママ')
+                <span style="color:hotpink; font-weight:bold;">(ママ)</span>
+            @endif
+
             {{ $isNonmember ? $reservation->child_name : optional($reservation->child)->child_name }}
         </a>
     </td>

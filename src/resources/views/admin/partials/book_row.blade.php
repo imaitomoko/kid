@@ -2,6 +2,7 @@
     $attendance = $reservation->attendance;
     $isAccounted = $attendance && $attendance->accounted;
     $feeTotal = $attendance ? $attendance->feeItems->sum(fn($f) => $f->feeItem->amount ?? 0) : 0;
+    $purpose = $attendance?->reservable?->purpose;
 @endphp
 
 <tr>
@@ -22,6 +23,11 @@
                     </span>
                 @endif
             @endif
+
+            @if(optional($reservation)->purpose === 'ママ')
+                <span style="color:hotpink; font-weight:bold;">(ママ)</span>
+            @endif
+
             {{ $isNonmember ? $reservation->child_name : optional($reservation->child)->child_name }}
         </a>
     </td>
@@ -145,8 +151,9 @@
 
     {{-- 会計チェック --}}
     <td>
-        @if($attendance)
-            <form action="{{ route('admin.book_list.accounted') }}" method="POST">@csrf
+        @if($attendance && $purpose !== 'ママ')
+            <form action="{{ route('admin.book_list.accounted') }}" method="POST">
+                @csrf
                 <input type="hidden" name="attendance_id" value="{{ $attendance->id }}">
                 <input type="checkbox" name="accounted" value="1"
                     onchange="this.form.submit()"
