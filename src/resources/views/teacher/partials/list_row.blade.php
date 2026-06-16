@@ -44,7 +44,7 @@
             </form>
         @else
             <div class="time-form-wrap">
-                <form action="{{ route('teacher.attendance.updateStartTime', $reservation) }}" method="POST" class="time-form">
+                <form action="{{ route('teacher.attendance.updateStartTime', $reservation->id) }}" method="POST" class="time-form">
                     @csrf
                     @method('PUT')
                     <input type="hidden" name="nonmember" value="{{ $isNonmember ? '1' : '0' }}">

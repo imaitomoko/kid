@@ -75,6 +75,7 @@ class AdminListController extends Controller
         if ($category) {
             $item = FeeItem::where('category', $category)->first();
             if ($item) {
+
                 $count = match ($item->unit) {
                     '30分単位' => ceil($minutes / 30),
                     '1時間単位' => ceil($minutes / 60),

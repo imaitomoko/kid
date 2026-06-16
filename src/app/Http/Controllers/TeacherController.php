@@ -22,6 +22,8 @@ class TeacherController extends Controller
        // 非会員
         if ($attendance->reservable_type === NonmemberReservation::class) {
             return match ((int)$attendance->reservable->is_under_3) {
+                4 => '誰でも通園無償',
+                3 => '誰でも通園減免',
                 2 => '誰でも通園',
                 1 => '未満児保育',
                 default => '以上児保育',
@@ -65,12 +67,21 @@ class TeacherController extends Controller
         }
 
          /** ---- 保育料 ---- */
-        $hours = ceil($start->diffInMinutes($end) / 60);
+        $minutes = $start->diffInMinutes($end);
+
         $category = $this->decideBasicCategory($attendance);
 
         if ($category) {
             $item = FeeItem::where('category', $category)->first();
             if ($item) {
+
+                $count = match ($item->unit) {
+                    '30分単位' => ceil($minutes / 30),
+                    '1時間単位' => ceil($minutes / 60),
+                    '1回単位' => 1,
+                    default => 1,
+                };
+                
                 AttendanceFeeItem::create([
                     'attendance_id' => $attendance->id,
                     'fee_item_id'   => $item->id,
