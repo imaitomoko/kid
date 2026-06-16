@@ -36,7 +36,7 @@
         </thead>
         <tbody>
             @foreach($allReservations as $reservation)
-                @include('admin.partials.book_row', [
+                @include('teacher.partials.list_row', [
                     'reservation' => $reservation,
                     'isNonmember' => $reservation->isNonmember
                 ])

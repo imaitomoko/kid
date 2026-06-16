@@ -81,11 +81,11 @@ class TeacherController extends Controller
                     '1回単位' => 1,
                     default => 1,
                 };
-                
+
                 AttendanceFeeItem::create([
                     'attendance_id' => $attendance->id,
                     'fee_item_id'   => $item->id,
-                    'amount'        => $item->amount * $hours,
+                    'amount'        => $item->amount * $count,
                 ]);
             }
         }
