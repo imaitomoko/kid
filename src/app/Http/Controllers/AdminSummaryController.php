@@ -133,7 +133,7 @@ class AdminSummaryController extends Controller
 
                 $isCareCategory = in_array($category, ['未満児保育', '以上児保育']);
 
-                if ($isCareCategory && $unit === '時間') {
+                if ($isCareCategory && $unit === '1時間単位') {
                     // 保育料は時間 × 金額
                      $calcAmount = $amount * $hours;
                 } else {
