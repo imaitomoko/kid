@@ -163,6 +163,7 @@ class AdminSummaryController extends Controller
                 }
             }
         }
+        ksort($summary);
 
         // 月合計を計算
         $totalDays = count($summary);
@@ -362,6 +363,7 @@ class AdminSummaryController extends Controller
                 }
             }
         }
+        ksort($summary);
 
         // 月合計を計算
         $totalDays = count($summary);
