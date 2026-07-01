@@ -407,7 +407,7 @@ class AdminSummaryController extends Controller
         $pdf = Pdf::setOptions([
             'isHtml5ParserEnabled' => true,
             'isRemoteEnabled' => true,
-        ])->loadView('admin.summary_pdf', compact(
+        ])->loadView('admin.summary_anyone_pdf', compact(
             'summary', 'month', 'totalDays',
             'totalCare', 'totalMeal', 'totalSnack', 'totalAll',
             'totalUnder4', 'totalOver4'
