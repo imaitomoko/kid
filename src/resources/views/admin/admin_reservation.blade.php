@@ -42,6 +42,11 @@
                         $date = $current->copy()->day($day)->toDateString();
                         $weekday = $current->copy()->day($day)->dayOfWeek;
                         $isHoliday = $weekday === 0 || $weekday === 6;
+                        $today = \Carbon\Carbon::today();
+                        $start = \Carbon\Carbon::today()->copy()->addDays(2);
+                        $end = \Carbon\Carbon::today()->copy()->addDays(14);    
+                        $targetDate = \Carbon\Carbon::parse($date);
+                        $isReservable = $targetDate->between($start, $end);
                     @endphp
                     <td>
                         <div>{{ $day }}</div>
@@ -50,8 +55,8 @@
                                 <span class="badge bg-secondary">受付不可</span>
                             @else
                                 <form action="{{ route('admin.reservation.list', ['date' => $date]) }}" method="GET">
-                                <button type="submit" class="btn btn-sm btn-success">⚪︎</button>
-                            </form>
+                                    <button type="submit" class="btn btn-sm {{ $isReservable ? 'btn-success' : 'btn-danger' }}">⚪︎</button>
+                                </form>
                             @endif
                         </div>
                     </td>
