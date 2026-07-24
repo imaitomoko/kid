@@ -91,7 +91,11 @@
         </tr>
     </table>
     <div class="back__button">
-        <a class="back" href="{{ route('book.list', ['date' => $date]) }}">back</a>
+        @if(request('return'))
+            <a class="back" href="{{ request('return') }}">back</a>
+        @else
+            <a class="back" href="{{ route('book.list', ['date' => $date]) }}">back</a>
+        @endif
     </div>
 </div>
 @endsection

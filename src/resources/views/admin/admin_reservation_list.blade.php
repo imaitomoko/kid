@@ -29,7 +29,16 @@
         @forelse($reservations as $r)
             <tr>
                 <td>{{ $r['is_member'] ? '会員' : '非会員' }}</td>
-                <td>{{ $r['child_name'] }}</td>
+                <td>
+                    <a href="{{ route('admin.book_detail', [
+                        'id' => $r['id'],
+                        'isNonmember' => $r['is_member'] ? 0 : 1,
+                        'date' => $date,
+                        'return' => url()->full(),
+                    ]) }}">
+                        {{ $r['child_name'] }}
+                    </a>
+                </td>
                 <td>{{ $r['time'] }}</td>
                 <td>
                     @if($r['is_member'])
